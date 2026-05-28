@@ -27,6 +27,7 @@ Do not generate a complete final essay before the user approves the plan unless 
 - Start by collecting only blocking requirements. Continue with labelled assumptions when missing information does not block useful planning.
 - Treat the approved plan as the drafting contract. After approval, do not change the thesis, section logic, or scope unless the user authorizes the change.
 - Use source evidence before prose. Do not invent citations, statistics, dates, mechanisms, quotations, source names, lecturer preferences, or rubric expectations.
+- Label plan-stage citations as candidate unless their metadata and claim relevance have already been verified. Do not present exact paper claims, dates, or "recent review" assertions as verified from memory.
 - Prefer official course material and required readings when supplied. Use external papers to sharpen the argument, not to replace the user's assignment scope.
 - Separate descriptive and analytic writing. The main body should contain at least 30 percent analytic material; the discussion should be mostly analytic.
 - Use citations for non-obvious factual, mechanistic, theoretical, clinical, quantitative, methodological, or experimental claims.

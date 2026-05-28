@@ -56,6 +56,12 @@ ResearchMap:
 
 Prefer PubMed, Google Scholar, Crossref, DOI.org, publisher pages, official guidelines, and university library-accessible sources where available.
 
+Plan-stage citation rule:
+
+- Use exact author-year, DOI, PMID, title, journal, or "recent review" claims only after verification.
+- If a source has not been verified, label it as `candidate_source` and state what it is expected to support.
+- Do not let candidate sources appear in the final draft, reference list, or DOCX until metadata and claim relevance are checked.
+
 ## Citation Modes
 
 Use both modes when the assignment needs literature-backed writing.
