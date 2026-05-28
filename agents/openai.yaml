@@ -1,0 +1,4 @@
+interface:
+  display_name: "Essay Tutor"
+  short_description: "Plan, research, and draft academic essays"
+  default_prompt: "Use $essay-tutor to plan a literature-backed academic essay before drafting."

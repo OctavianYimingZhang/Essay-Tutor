@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "skill_id": "essay-tutor",
+  "repo": "OctavianYimingZhang/Essay-Tutor",
+  "branch": "main",
+  "entrypoint": "SKILL.md",
+  "license": "MIT",
+  "health_commands": [
+    "python3 -m compileall -q scripts",
+    "python3 /Users/octavianzhang/.codex/skills/.system/skill-creator/scripts/quick_validate.py .",
+    "python3 scripts/validate_essay_tutor.py --strict"
+  ]
+}
