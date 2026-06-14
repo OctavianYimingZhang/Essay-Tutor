@@ -1,4 +1,4 @@
 interface:
   display_name: "Essay Tutor"
-  short_description: "Plan, research, and draft academic essays"
-  default_prompt: "Use $essay-tutor to plan a literature-backed academic essay before drafting."
+  short_description: "Use ask-user and Plan Mode-aware tutoring to plan, research, revise, and draft academic essays"
+  default_prompt: "Use $essay-tutor to confirm requirements with ask-user, co-design a literature-backed essay plan, and wait for approval before drafting."

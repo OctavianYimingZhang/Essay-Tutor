@@ -20,7 +20,6 @@ Required when available:
 | Rubric | Marking criteria, learning outcomes, feedback, grade descriptors | Sets examiner fit |
 | Deadline/stage | Planning only, first draft, revision, final polish, file generation | Controls workflow depth |
 | Language | Final language and whether notes can be bilingual | Controls prose output |
-| AI-use policy | Whether AI-assisted drafting is permitted and whether process disclosure is needed | Prevents academic-integrity conflicts |
 
 Strongly recommended:
 
@@ -35,29 +34,53 @@ Strongly recommended:
 | Previous feedback | Correct recurring weaknesses |
 | Preferred essay examples | Extract transferable style rules only, not factual claims |
 
-## Blocking Question Rule
+## Ask User Tool Gate
 
-Ask one concise clarification question only when the missing field blocks the next useful output.
+Detailed planning requires confirmed requirements. Do not guess, default, preselect, or predict missing essay requirements before the plan.
 
-Continue without asking when a conservative assumption is possible. Label the item:
+Use native `request_user_input` / ask-user UI for material user decisions when that capability is available. If it is unavailable, ask the same questions in normal chat and keep them concise.
+
+Ask one to three concise questions per turn when any required field is missing, ambiguous, contradictory, or not directly verifiable from the prompt, uploaded files, official course material, or local files. Use concrete options when useful, but do not choose on the user's behalf.
+
+Ask-user turns should:
+
+- contain only decisions that affect the essay plan, evidence strategy, citation style, or final format;
+- offer meaningful mutually exclusive choices when the answer can be structured;
+- put the recommended option first only when the academic or workflow rationale is clear;
+- include a one-sentence explanation of why the decision matters;
+- avoid long plain-text questionnaires when ask-user UI is available.
+
+Use ask-user for these requirement decisions when they are not already verified:
+
+- academic level;
+- final language;
+- output form, including chat draft, Markdown, DOCX, PDF, headings, figures, tables, or appendices;
+- word or page limit and whether title, reference list, captions, figures, and tables count;
+- citation style and local style guide;
+- source base, including lecture slides, required readings, uploaded files, textbooks, or external literature;
+- rubric, marking standard, learning outcomes, and target grade;
+- reference-list inclusion and minimum or maximum source count;
+- figure, table, data, or appendix expectations.
+
+Before planning, classify every missing or unclear item as:
 
 ```yaml
-Assumption:
+UserDecisionNeeded:
   field:
-  assumed_value:
-  reason:
-  risk_if_wrong:
-OpenRequirement:
-  field:
+  question_to_user:
   why_it_matters:
-  when_to_resolve:
+  acceptable_answers:
+  source_checked:
 ```
 
 Examples:
 
-- Missing exact citation style does not block planning; use "style pending" and plan citation placement.
-- Missing word limit blocks final draft density; ask for it before drafting unless the user requested a generic plan.
-- Missing rubric does not block research; mark rubric fit as provisional.
+- Missing citation style: ask the user which style or course guide to follow before planning citation strategy.
+- Missing academic level: ask the user whether the essay is high school, undergraduate, master's, doctoral, professional, or journal level before calibrating depth.
+- Missing word or page limit: ask for the limit and what counts toward it before planning section density.
+- Missing rubric or marking standard: ask whether the user has one. If the user confirms none exists, record `confirmed_none` and continue.
+
+Only verified facts may enter `confirmed_requirements`. A requirement is verified when it is stated by the user or present in reliable source material inspected for this task.
 
 ## EssaySkillConfig
 
@@ -84,7 +107,6 @@ EssaySkillConfig:
   figure_table_data_needs:
   target_standard:
   language:
-  ai_use_policy:
   output_requested:
 ```
 
@@ -95,17 +117,62 @@ Before planning or drafting, produce internally or visibly when useful:
 ```yaml
 InputReadinessReport:
   ready_for:
-    - plan
     - research
+    - detailed_plan
     - draft
     - docx
-  blockers:
-  assumptions:
-  open_requirements:
+  confirmed_requirements:
+  open_user_decisions:
   evidence_available:
   evidence_missing:
   next_action:
 ```
+
+Readiness rules:
+
+- `ready_for.detailed_plan` is false while `open_user_decisions` is non-empty.
+- `ready_for.research` may be true before all user decisions are complete only for source discovery that does not depend on unresolved requirements.
+- `ready_for.draft` is false until the plan is approved.
+- `ready_for.docx` is false until file output and formatting requirements are confirmed.
+
+## Tutor Planning Loop
+
+After intake and source discovery, co-design the plan before presenting it as final.
+
+The loop is:
+
+```text
+Summarize confirmed requirements
+-> Explain the next planning choice and why it matters
+-> Ask the user to choose or confirm
+-> Update the working plan state
+-> Repeat until the plan is decision-complete
+-> Present the final plan for approval
+```
+
+Use this loop for high-impact planning decisions such as:
+
+- thesis direction or argumentative stance;
+- scope boundary and excluded material;
+- section architecture and order;
+- level of mechanism detail versus critical discussion;
+- source strategy, including classic papers, recent papers, official course material, or reviews;
+- figure, table, and data inclusion;
+- target standard, density, and risk tolerance for ambitious analysis.
+
+Tutor-style planning rules:
+
+- Teach the tradeoff before asking. Example: explain that a mechanism-heavy plan may score well for technical depth but can crowd out critical evaluation in a short essay.
+- Ask targeted decisions instead of dumping a complete plan for passive approval.
+- Keep a concise working-plan summary after important decisions so the user can correct direction early.
+- Do not emit the formal detailed plan while major plan preferences are unresolved.
+- Do not use ask-user for cosmetic preferences that will not change the essay plan.
+
+Plan Mode handling:
+
+- If native Codex Plan Mode is active, follow its rules for conversational planning and produce the final decision-complete essay plan inside a `<proposed_plan>` block.
+- If Plan Mode is not active, run the same tutor loop in normal chat and label the final plan clearly before requesting approval.
+- Never state or imply that this Skill can switch Codex into Plan Mode by itself.
 
 ## DeepResearch Before Plan
 
@@ -134,6 +201,16 @@ Minimum plan shape:
 
 ```yaml
 EssayPlan:
+  confirmed_requirements:
+    essay_question:
+    academic_level:
+    word_or_page_limit:
+    citation_style:
+    output_format:
+    final_language:
+    source_base:
+    rubric_or_marking_standard:
+  open_user_decisions: []
   essay_question:
   interpreted_scope:
   working_thesis:
@@ -175,9 +252,9 @@ EssayPlan:
   critical_thinking_strategy:
     main_body_analytic_targets:
     discussion_analytic_targets:
-  open_questions:
-  assumptions:
 ```
+
+Do not output a formal detailed plan if `open_user_decisions` contains any item. Ask the next required user question instead.
 
 ## Section Logic
 

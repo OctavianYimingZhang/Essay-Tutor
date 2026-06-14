@@ -66,6 +66,26 @@ Plan-stage citation rule:
 
 Use both modes when the assignment needs literature-backed writing.
 
+## Citation Prose Style
+
+Use claim-led parenthetical citation by default. Put the evidence-backed claim first and place the citation at the sentence or clause it supports.
+
+Preferred:
+
+```text
+Hydrogen bonding can stabilise protein folds when buried in favourable structural contexts (Pace et al., 2014).
+```
+
+Avoid author-led or source-route phrasing when the sentence can be written as a content claim with a parenthetical citation.
+
+Avoid:
+
+```text
+Pace et al. demonstrate that hydrogen bonds can stabilise proteins.
+```
+
+Use an author as the grammatical subject only when the sentence is about authorship, study design, theory history, disagreement between sources, methods, or comparison between research groups.
+
 ### Intensive-reading citation
 
 Use when one paper needs close interpretation:
@@ -178,6 +198,8 @@ CitationQA:
   metadata_matches_source: true
   metadata_matches_claim: true
   claim_strength_calibrated: true
+  parenthetical_claim_led_style_used_by_default: true
+  author_led_style_retained_only_when_functional: true
   in_text_and_reference_list_match: true
   no_unread_source_cited_as_primary: true
 ```
@@ -208,7 +230,7 @@ Use stronger verbs only when the verified source warrants them.
 ## Reference List Rules
 
 - Match the user's requested citation style.
-- If no style is specified, ask only when final drafting or DOCX output depends on it; otherwise mark it as pending.
+- If no citation style is specified, ask the user before planning citation strategy or drafting.
 - Include every in-text citation in the reference list.
 - Remove uncited reference-list entries unless the user asks for a bibliography of further reading.
 - For journal-specific styles, use official author instructions or CSL styles where available.
