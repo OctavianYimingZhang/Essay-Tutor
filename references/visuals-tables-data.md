@@ -1,164 +1,119 @@
 # Visuals, Tables, And Data
 
-Use this reference when an essay may include a figure, table, mechanism schematic, or data analysis.
+Use this reference when a task may include figures, tables, raw data, statistical output, GraphPad Prism files, spreadsheets, diagrams, or visual explanation.
 
-## Decision Rule
+## Communication Choice
 
-Include a visual, table, or data figure only when it improves the argument.
+Choose a visual, table, or data display when it improves one of these functions:
 
-Valid uses:
+- compare evidence, groups, models, conditions, or outcomes;
+- show a mechanism, pathway, timeline, workflow, or study design;
+- summarise a literature pattern or limitation matrix;
+- make data trends, uncertainty, or effect direction easier to inspect;
+- present methods or results more clearly than prose alone.
 
-- mechanism schematic;
-- model comparison;
-- evidence summary;
-- treatment comparison;
-- method workflow;
-- data result;
-- limitation matrix.
+Use prose when the information is simple, linear, or better handled by a short explanation and citation.
 
-Invalid uses:
+## Figure Planning
 
-- decoration;
-- unsupported mechanism;
-- copied lecture or paper layout;
-- image used as evidence without source support;
-- table that repeats prose without improving comparison.
-
-## Academic Paper Figure Reuse
-
-Citation alone is not permission to reproduce a figure.
-
-Use a published figure only when at least one condition is met:
-
-1. The article or figure has a compatible license such as CC BY.
-2. The publisher's reuse terms permit the intended use.
-3. Permission has been obtained.
-4. The use is clearly limited to private study and not submitted or redistributed.
-5. The user provided the image and confirms they have reuse rights.
-
-Maintain:
+For any figure, define:
 
 ```yaml
-FigureReuseGate:
-  source_paper:
-  figure_number:
-  licence:
-    - CC_BY
-    - CC_BY_NC
-    - publisher_permission
-    - user_provided_rights
-    - unknown
-  permission_status:
-  can_reuse_directly:
-  required_attribution:
-  caption:
-  bibliography_entry:
+FigurePlan:
+  purpose:
+  source_or_data_basis:
+  panel_structure:
+  labels_needed:
+  caption_claim:
+  permission_or_authorship:
+  citation_or_data_link:
 ```
 
-If the licence is unknown, do not reproduce the image. Create an original schematic instead.
+A strong figure caption states what the reader should learn, identifies the source or data basis, and explains symbols, units, sample sizes, or abbreviations needed for interpretation.
 
-## Generated Mechanism Figures
+## Published Figure Use
 
-Use image generation or a BioRender-style schematic only after the written mechanism is source-backed.
+Published figures are suitable when reuse rights, assignment context, and attribution are clear. Check:
 
-Rules:
+- licence or permission status;
+- whether the user owns or supplied the image;
+- whether the intended use is private study, submitted coursework, publication, or redistribution;
+- whether an original schematic would communicate the idea more appropriately.
 
-- Represent only claims already supported by accepted sources.
-- Do not copy a paper, lecture, textbook, or private figure's layout.
-- Do not introduce new labels, mechanisms, quantities, dates, or pathways.
-- Keep labels traceable to sources.
-- Include a figure legend.
-- State that the figure is a generated schematic, not an official or reproduced figure.
+When reuse is uncertain, create an original schematic based on verified claims and cite the sources behind the content.
 
-Legend template:
+## Generated Or Original Schematics
 
-```text
-Figure 1. Generated schematic of [mechanism]. The figure summarises source-backed relationships between [A], [B], and [C]. It is an original schematic for writing support and is not reproduced from any published article or course material.
-```
+Use generated or original figures for mechanisms, conceptual models, workflows, and summaries when the content is source-backed.
 
-Internal spec:
+Maintain traceability:
 
 ```yaml
-GeneratedFigureSpec:
-  figure_id:
-  type:
-    - mechanism_pathway
-    - process_sequence
-    - comparison_framework
-    - method_workflow
-  source_backed_claims:
+SchematicSpec:
+  concept:
+  claims_represented:
+  sources:
   labels:
-  forbidden_elements:
-  generation_prompt:
-  legend:
-  alt_text:
-  qa_flags:
+  caption:
 ```
+
+Keep labels and relationships tied to accepted sources or user-provided data.
+
+## Data Analysis And GraphPad-Style Workflow
+
+For data-supported assignments, use the authoritative analysis source available for the task:
+
+- supplied statistical output;
+- GraphPad Prism project or exported results;
+- spreadsheet calculations;
+- scripts run in the current workspace;
+- course-provided analysis instructions.
+
+Before writing results, extract:
+
+```yaml
+AnalysisRecord:
+  analysis_name:
+  data_source:
+  sample_or_row_basis:
+  exclusions_or_cleaning_applied:
+  test_or_model:
+  factors_or_variables:
+  correction_or_posthoc_method:
+  descriptive_statistics:
+  inferential_statistics:
+  units:
+  figure_or_table_destination:
+```
+
+Preserve sample sizes, degrees of freedom, test statistics, p values, estimates, uncertainty measures, and units exactly as supported by the authoritative output.
+
+When multiple analysis sources disagree, treat the assignment instructions and authoritative software output as the starting point, then record the discrepancy before drafting final results.
 
 ## Data Figures
 
-When the user provides data or the essay requires original analysis, use a transparent data workflow.
+Design data figures around the reader's comparison task:
 
-```yaml
-DataFigureWorkflow:
-  input:
-    - raw_data
-    - variable_description
-    - groups
-    - statistical_question
-    - required_graph_type
-  preprocessing:
-    - check missing values
-    - identify exclusion rules before analysis
-    - avoid post-hoc outlier removal unless method is specified
-  analysis:
-    - choose statistical test
-    - justify assumptions
-    - report effect size when possible
-    - report confidence interval when possible
-  graphing:
-    - use GraphPad Prism when available and appropriate
-    - otherwise use a reproducible statistical or plotting environment
-  output:
-    - figure
-    - figure legend
-    - statistical note
-    - methods sentence
-```
+- group related conditions visually;
+- show uncertainty measures requested by the course or discipline;
+- label axes with variable names and units;
+- use legends or direct labels for groups;
+- show statistical annotations when they help interpret the reported test;
+- match caption claims to the analysis output.
 
-GraphPad Prism integration rules:
+For lab reports, cite the figure in the text before or near the interpretation and describe the direction and relevance of the result in prose.
 
-- Use Prism for final data figures when it is available and the graph type suits Prism.
-- Use Prism scripts, templates, or PZFX workflows only through official Prism functionality or license-compatible automation.
-- Do not copy third-party GraphPad automation Skill code into this Skill unless its license permits reuse.
-- If Prism is unavailable, use an auditable local analysis workflow and state that Prism output was not generated.
+## Tables
 
-## Academic Tables
+Use tables for compact comparison, methods, descriptive statistics, inferential outputs, source summaries, or limitation matrices.
 
-Use table formatting suitable for an academic paper:
+A useful academic table has:
 
-```yaml
-TableRules:
-  style:
-    - no_vertical_lines
-    - top_rule
-    - header_rule
-    - bottom_rule
-    - concise_caption_above
-    - abbreviation_note_below
-  content:
-    - include only information used in the argument
-    - cite sources in table body or caption
-    - use comparable categories across rows
-```
+- a specific title;
+- clear row and column labels;
+- units and abbreviations;
+- consistent precision;
+- notes for corrections, sample size, or source basis;
+- only the rows and columns needed for the reader's task.
 
-Useful table types:
-
-- competing models comparison;
-- evidence strength summary;
-- treatment comparison;
-- mechanism versus evidence matrix;
-- clinical intervention summary;
-- limitations matrix.
-
-Before final output, verify that the prose refers to the table and interprets it. A table not used by the argument should be removed.
+Place table captions according to the requested style or document convention.

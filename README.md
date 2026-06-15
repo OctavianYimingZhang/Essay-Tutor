@@ -1,24 +1,23 @@
 # Essay Tutor Codex Skill
 
-`essay-tutor` is a Codex Skill for producing academic essays through a controlled workflow: ask-user intake, Plan Mode-aware tutor planning, DeepResearch, user approval, evidence appraisal, citation-managed drafting, critical analysis, visual/table/data handling, DOCX formatting, and final QA.
+`essay-tutor` is a Codex Skill for academic writing tasks that benefit from interaction-first brief reconstruction, evidence mapping, structure planning, citation control, data or figure handling, DOCX formatting, and final quality checks.
 
-The Skill is designed for literature-backed academic writing where accuracy, traceability, user-confirmed requirements, and critical discussion matter more than fast generic drafting.
+The Skill is designed for assessed essays, lab reports, literature reviews, proposals, case studies, discussion sections, revision tasks, and data-supported reports where accuracy, traceability, examiner fit, and clear academic prose matter.
 
 ## What It Does
 
 | Area | Capability |
 | --- | --- |
-| Intake | Interactively confirms topic, word or page limit, academic level, citation style, source base, rubric, language, and output requirements before detailed planning, preferring native ask-user UI when available. |
-| Planning | Uses a tutor-style planning loop to explain tradeoffs, ask targeted plan decisions, and produce a subtitle-level plan with thesis, section functions, citation strategy, visual strategy, and critical-thinking targets. |
-| Approval loop | Prevents final drafting until the user approves the plan unless the user explicitly skips planning. |
-| Research | Builds a verified literature map using official course material, required readings, primary papers, reviews, textbooks, and academic databases. |
-| Drafting | Writes from the approved plan with calibrated claims and paragraph-level argument logic. |
-| Revision | Distills feedback into transferable language rules, deletes low-value content, and reallocates capacity to argument, evidence strength, alternatives, and scope. |
-| Citation | Supports intensive-reading citations and broad-support synthesis citations with metadata validation and claim-led parenthetical citation prose by default. |
-| Critical thinking | Requires explicit critical-analysis tasks in body paragraphs and a mostly analytic discussion. |
-| Visuals and data | Handles figure permission checks, generated mechanism schematics, academic tables, and GraphPad Prism-style data workflows. |
-| DOCX | Formats Word essays with Arial, 2.5 cm margins, 1.5 line spacing, justified body text, centered titles, and left-aligned subheadings. |
-| QA | Checks unsupported claims, fake citations, overclaiming, weak discussion, figure permission, table quality, references, and formatting. |
+| Intake | Builds and double-checks an assignment brief from the prompt, rubric, course material, user files, examples, and preferences. |
+| Readiness | Marks requirements as verified from materials, inferred from context, user-confirmed, user preference needed, or evidence gap. |
+| Planning | Creates a confirmed essay or report plan that links section function, evidence, citation strategy, output density, and figure/table/data needs. |
+| Research | Builds a source and evidence map from course material, required readings, user files, authoritative academic sources, and verified external literature. |
+| Drafting | Writes from the structure plan with paragraph-level claim, evidence, interpretation, boundary, and link-back logic. |
+| Revision | Improves question fit, evidence fit, interpretation, citation prose, density, and reader flow. |
+| Citation | Supports claim-led citation placement, metadata checks, and reference-list consistency in the requested style. |
+| Visuals and data | Uses figures, tables, diagrams, data outputs, and GraphPad-style workflows when they improve comparison, method clarity, mechanism explanation, synthesis, or result interpretation. |
+| DOCX | Formats Word documents with Arial, 2.5 cm margins, 1.5 line spacing, justified body text, centred titles, and left-aligned subheadings by default. |
+| QA | Checks requirement fit, evidence support, citation consistency, structure, density, visual/table usefulness, data accuracy, and output formatting. |
 
 ## Install
 
@@ -34,63 +33,72 @@ python3 scripts/skill_maintenance.py doctor
 
 ```text
 $essay-tutor
-Plan a 2,000-word academic essay on seasonal affective disorder as a model of seasonal light signalling. Use APA 7 and do not draft until I approve the plan.
+Help me plan an undergraduate essay on seasonal affective disorder as a model of seasonal light signalling. Start with a brief check, ask what you need, then make a plan for my confirmation.
+```
+
+```text
+$essay-tutor
+Use the supplied lab handbook, rubric, spreadsheet, and GraphPad Prism file to produce a Manchester Harvard lab report in English DOCX format.
 ```
 
 ## Core Workflow
 
 ```mermaid
 flowchart TD
-    A["Essay request"] --> B["Ask-user intake and readiness"]
-    B --> C["DeepResearch"]
-    C --> D["Tutor planning loop"]
-    D --> E["Decision-complete plan"]
-    E --> F["User approval loop"]
-    F --> G["Subagent or sequential research"]
-    G --> H["Draft"]
-    H --> I["Citation, visual, table, and data QA"]
-    I --> J["Final essay or DOCX"]
+    A["Academic writing request"] --> B["Brief check"]
+    B --> C["Requirement model and evidence map"]
+    C --> D["Structure plan for confirmation"]
+    D --> E["Draft or revision from confirmed plan"]
+    E --> F["Citation, visual, data, and format validation"]
+    F --> G["Final text or DOCX"]
 ```
 
 ## Evidence Boundary
 
-The Skill prioritizes:
+The Skill prioritises:
 
-1. The exact essay question, rubric, and learning outcomes.
-2. Official lecture slides, official notes, and handouts.
-3. Required readings and reading-list papers.
-4. Primary peer-reviewed papers.
-5. Systematic reviews, meta-analyses, major reviews, and clinical guidelines.
-6. Textbooks and official academic sources.
-7. Additional peer-reviewed papers found by search.
+1. The exact question, brief, rubric, learning outcomes, and local style guidance.
+2. Official lecture slides, official notes, handouts, and required readings.
+3. User-provided papers, datasets, analysis outputs, and teacher feedback.
+4. Primary peer-reviewed studies for specific empirical claims.
+5. Reviews, meta-analyses, textbooks, and guidelines for synthesis or orientation.
+6. Additional peer-reviewed literature found through academic search.
 
-It does not permit invented citations, fake statistics, unsupported mechanisms, unverified DOI/PMID metadata, or paper-figure reuse without license or permission.
+Claims, statistics, mechanisms, citation metadata, and figure content are grounded in the current source base or recorded as evidence gaps for revision.
 
-## Interactive Intake
+## Planning And Drafting
 
-The Skill does not create detailed plans from guessed requirements. If academic level, citation style, word or page limit, output format, source base, language, or rubric status is not stated or verifiable from supplied material, it asks the user before planning.
+The Skill uses interaction-first planning for new essay creation:
 
-When native ask-user UI is available, the Skill uses it for material requirement and plan decisions instead of bulk plain-text questionnaires. It uses one to three meaningful choices per turn, explains why the choice matters, and keeps cosmetic preferences out of the ask-user flow.
+- It starts with a Brief Check when the assignment is not already fully specified.
+- It plans essays with Abstract, Introduction, Main Body subsections, Discussion, Conclusion, and References where sources are used.
+- It drafts from the confirmed plan.
+- In Codex Plan Mode, it uses the required `<proposed_plan>` format for formal plans.
 
-## Plan Mode-Aware Planning
+## Density And Style
 
-The Skill uses native Codex Plan Mode when the current session provides it, but it does not claim to switch modes by itself. In Plan Mode, the final essay plan is emitted as a `<proposed_plan>` only after open decisions are resolved. Outside Plan Mode, the Skill follows the same tutor-style planning loop in normal chat and waits for explicit approval before drafting.
+The Skill chooses output density by:
 
-## Revision Discipline
+- rubric or examiner emphasis;
+- concept difficulty;
+- evidence volume and conflict;
+- analysis and uncertainty to explain;
+- reader context needed;
+- available assignment space;
+- usefulness of figures, tables, or data displays.
 
-The Skill treats major teacher edits and model essays as sources of transferable writing behaviour only. It does not copy example wording or import topic-specific claims. Large deletions target low-value background, repeated aims, source-route narration, avoidable author-led citation prose, unsupported intensifiers, duplicated result/table prose, and detail catalogues without inference. The freed capacity should be spent on mechanism, interpretation, alternative explanations, evidence-strength calibration, claim scope, and direct links back to the question.
+Teacher feedback and exemplars are used to extract transferable structure, tone, density, and reporting patterns. Topic-specific claims are grounded in the current assignment sources.
 
 ## Optional Integrations
 
 The Skill can use external tools when available:
 
-- CSL-compatible formatters or Citation.js for citation rendering.
-- PubMed, Crossref, DOI.org, publisher pages, and Google Scholar for source discovery and validation.
-- Scholar Sidekick MCP or a citation-management Skill for identifier resolution and bibliography checks.
-- GraphPad Prism for final data figures when the user supplies data and Prism is available.
-- Image generation or BioRender-style schematic workflows for original mechanism figures.
+- citation managers or CSL-compatible formatters for bibliography work;
+- PubMed, Crossref, DOI.org, publisher pages, Google Scholar, or library databases for source discovery and validation;
+- GraphPad Prism, spreadsheet tools, or local scripts for data analysis;
+- image generation, BioRender-style workflows, or document tools for figures and file output.
 
-Third-party code is not bundled unless its license permits reuse. External tools should be invoked or documented rather than copied into the Skill package without license review.
+Third-party code stays outside the Skill package unless the licence supports bundling.
 
 ## Local Validation
 

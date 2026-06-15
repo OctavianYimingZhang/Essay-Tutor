@@ -1,16 +1,14 @@
 # DOCX Output
 
-Use this reference only when the user asks for a Word document, DOCX file, or formatted essay file.
+Use this reference when the user asks for a Word document, DOCX file, PDF-from-DOCX, or formatted academic file.
 
-## File Creation Rule
+## Output Contract
 
-Do not create files unless the user asks for a file output or a Word document.
+Create document files when the user asks for a file output or when Word/DOCX/PDF formatting is part of the task. Use the latest draft and verified reference list as the document source.
 
-When the user requests DOCX, generate a document that does not require manual reformatting.
+## Default Academic DOCX Format
 
-## Default Essay DOCX Format
-
-Apply these settings unless the user specifies otherwise:
+Apply these settings unless the assignment, local style guide, or user request gives a different instruction:
 
 ```yaml
 DOCXFormat:
@@ -36,27 +34,22 @@ DOCXFormat:
   other_settings: default
 ```
 
-## Structure
+## Document Structure
 
-Default structure:
+Build the structure that fits the assignment type:
 
-```text
-Title
-Optional essay question
-Introduction
-Main body sections and subtitles
-Discussion when appropriate
-Conclusion
-References
-Figure legends if figures are included
-Tables where requested or useful
-```
+- title page or title block where expected;
+- abstract or summary where requested by the brief or discipline;
+- for essay tasks: Abstract, Introduction, Main Body with named subsections, Discussion, Conclusion, and References where sources are used;
+- for report tasks: introduction, methods, results, discussion, conclusion, or other sections requested by the brief;
+- references or bibliography;
+- figures, tables, captions, notes, and appendices where useful or requested.
 
-Number headings only when useful or required.
+Use headings that help the reader navigate the argument or report. Number headings when the assignment, discipline, or document length makes numbering useful.
 
 ## Implementation Guidance
 
-Use a DOCX library or existing document tool that can set:
+Use a DOCX library, document tool, or existing office application workflow that can set:
 
 - section margins;
 - paragraph alignment;
@@ -64,19 +57,12 @@ Use a DOCX library or existing document tool that can set:
 - font family;
 - heading styles;
 - captions;
-- table borders.
+- table borders;
+- page breaks where they improve document structure.
 
-For generated tables:
+For generated tables, prefer clean academic rules: top rule, header rule, bottom rule, caption above, and notes below when needed.
 
-- avoid vertical borders;
-- use top, header, and bottom horizontal rules;
-- place caption above;
-- place notes below.
-
-For figures:
-
-- include only licensed, permitted, user-owned, or generated original figures;
-- include a caption and source/permission note where needed.
+For figures, include a caption and source, authorship, permission, or data note when relevant.
 
 ## DOCX QA
 
@@ -84,16 +70,14 @@ Before delivery, check:
 
 ```yaml
 DOCXQA:
-  file_opens:
-  margins_are_2_5_cm:
-  font_is_arial:
-  line_spacing_is_1_5:
-  body_text_is_justified:
-  title_is_centered:
-  subheadings_are_left_aligned:
-  references_present_when_citations_used:
-  figures_have_captions:
-  tables_have_academic_rules:
+  latest_text_used:
+  requested_format_applied:
+  citations_and_references_match:
+  figures_and_tables_have_captions:
+  captions_near_items:
+  headings_consistent:
+  body_text_readable:
+  exported_pdf_matches_docx_when_pdf_requested:
 ```
 
-If any formatting check fails, fix the document before final response.
+Inspect the generated file or exported PDF when possible, especially after adding figures, tables, page breaks, or references.

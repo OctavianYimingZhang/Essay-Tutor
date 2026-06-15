@@ -1,103 +1,77 @@
 ---
 name: essay-tutor
-description: Academic essay workflow for interactive ask-user intake, Plan Mode-aware essay planning, deep research, plan approval, subagent research, citation-controlled drafting, critical analysis, figures, tables, data analysis, DOCX formatting, and final QA. Use when the user asks to plan, research, outline, draft, revise, cite, format, or produce an academic essay, model essay, literature-backed argument, discussion section, figure/table plan, or Word essay document.
+description: Academic writing workflow for planning, researching, drafting, revising, citing, formatting, and quality-checking essays, lab reports, literature reviews, case studies, proposals, discussion sections, data-supported reports, and Word/DOCX academic documents. Use when the user asks Codex to produce or improve assessed academic writing, align writing to a rubric or exemplar, manage citations, handle figures/tables/data, or create a formatted academic document.
 ---
 
 # Essay Tutor
 
-Use this Skill to turn an essay request into a controlled academic-writing workflow:
+Use this Skill to turn academic-writing requests into an interaction-led tutoring workflow:
 
 ```text
-UserRequest
--> EssaySkillConfig
--> InputReadinessReport
--> DeepResearch
--> TutorPlanningLoop
--> DecisionCompleteEssayPlan
--> UserApproval
--> SubagentResearch
--> EssayDraft
--> CitationFigureTableQA
--> FinalOutput
+understand task -> brief check -> structure plan -> user confirmation -> draft -> validation -> output
 ```
 
-Do not generate a complete final essay before the user approves the plan unless the user explicitly asks to skip planning.
+Keep the workflow light. Read only the reference files that match the current task, and use the user's assignment material as the main source of truth.
 
-## Operating Rules
+## Core Principles
 
-- Before a detailed plan, collect every requirement that affects essay scope, evidence, format, citation, language, or output. Do not guess, default, preselect, or predict user intent for missing requirements.
-- Ask the user for any information that cannot be verified from the prompt, uploaded material, course material, or local files. Prefer native `request_user_input` / ask-user UI for material requirement and plan decisions when that capability is available.
-- Use one to three meaningful choices per ask-user turn when possible. Each choice must represent a real academic or workflow tradeoff, not filler.
-- Teach while planning: briefly explain why each user decision affects scope, evidence, citation density, structure, or final output.
-- Use native Codex Plan Mode when it is active. In Plan Mode, do not emit the official final essay plan until all open decisions are resolved; wrap the final decision-complete plan in a `<proposed_plan>` block.
-- Do not claim that this Skill can force Codex into Plan Mode. If Plan Mode or ask-user UI is unavailable, run the same tutor-style planning loop in normal chat and wait for explicit approval before drafting.
-- Do not produce a detailed plan while required user decisions remain open.
-- Treat the approved plan as the drafting contract. After approval, do not change the thesis, section logic, or scope unless the user authorizes the change.
-- Use source evidence before prose. Do not invent citations, statistics, dates, mechanisms, quotations, source names, lecturer preferences, or rubric expectations.
-- Label plan-stage citations as candidate unless their metadata and claim relevance have already been verified. Do not present exact paper claims, dates, or "recent review" assertions as verified from memory.
-- Prefer official course material and required readings when supplied. Use external papers to sharpen the argument, not to replace the user's assignment scope.
-- Separate descriptive and analytic writing. The main body should contain at least 30 percent analytic material; the discussion should be mostly analytic.
-- Use citations for non-obvious factual, mechanistic, theoretical, clinical, quantitative, methodological, or experimental claims.
-- Use direct academic paper figures only when reuse is licensed or permitted. Citation alone is not permission.
-- Create DOCX files only when the user asks for a file or Word output.
-- Keep final Skill/repository content in English.
+- Start new essay tasks by reconstructing the assignment brief with the user.
+- Make the first user-facing output for a sparse new essay request a Brief Check or focused requirement questions.
+- Build a requirement model from the prompt, rubric, brief, course material, examples, and user preferences before planning detailed prose.
+- Use verified evidence before drafting substantive claims, statistics, methods, citations, lecturer expectations, or source metadata.
+- Choose output density by rubric emphasis, concept difficulty, evidence volume, analysis needed, reader context, and available assignment space.
+- Treat exemplars and teacher feedback as transferable structure, density, and tone evidence; use topic claims from them only when independently supported by the assignment material or sources.
+- Use the default essay architecture for essay tasks: Abstract, Introduction, Main Body with named subsections, Discussion, Conclusion, and References when sources are used.
+- Match figures, tables, and data presentation to the work they do for the argument: comparison, mechanism, method clarity, evidence synthesis, or result interpretation.
+- Keep claims, evidence, interpretation, boundaries, and links back to the question close together.
+- Create Word/DOCX files when the user asks for a file, Word output, or formatted document.
+- Keep final Skill repository content in English.
 
 ## Workflow
 
-1. **Intake and readiness**
+1. **Intake and requirement model**
    - Read `references/intake-and-planning.md`.
-   - Build `EssaySkillConfig` and `InputReadinessReport`.
-   - Run the Interactive Intake Gate. Confirm the essay question, academic level, word or page limit, citation style, output format, final language, source base, and rubric or marking standard before detailed planning.
-   - Use the Ask User Tool Gate when available. Ask one to three concrete user-decision questions per turn until the gate is complete.
+   - Build an `AssignmentBrief` that records task type, title or question, academic context, output form, citation style, source base, rubric or marking evidence, language, target quality, and useful constraints.
+   - Mark each requirement as verified from materials, inferred from context, user-confirmed, or evidence gap.
+   - Use a Brief Check to ask concise user questions for plan-changing preferences or evidence gaps.
 
-2. **Deep research and plan**
+2. **Evidence map and research**
    - Read `references/research-and-citation.md`.
-   - Search and verify enough source material to support a detailed plan.
-   - Run the Tutor Planning Loop before the final plan: explain tradeoffs, ask targeted plan decisions, and progressively lock thesis, scope, structure, citation strategy, figure/table/data strategy, and critical-thinking targets.
-   - Produce a decision-complete plan only after open user decisions are empty.
+   - Prioritise the assignment brief, rubric, official course material, required readings, user files, authoritative academic sources, and verified external literature.
+   - Build a claim-to-source map before drafting claim-heavy sections.
 
-3. **Approval loop**
-   - In Plan Mode, present the decision-complete plan in a `<proposed_plan>` block. Outside Plan Mode, present the same final plan in normal chat.
-   - Wait for the user to modify or approve the plan.
-   - Revise only the requested plan components and include a concise change log.
-   - Start full drafting only after the user says "Approve Plan" or an equivalent approval.
+3. **Structure plan**
+   - Use `references/intake-and-planning.md` to create a section plan that states what each section does, what evidence it uses, and how much detail it deserves.
+   - For essay tasks, plan Abstract, Introduction, Main Body subsections, Discussion, Conclusion, and References when sources are used.
+   - Present the plan for user double-check. In Codex Plan Mode, use the required `<proposed_plan>` block; outside Plan Mode, use the same plan structure in normal chat.
+   - Draft from the confirmed plan.
 
-4. **Subagent research after approval**
-   - Read `references/subagents.md`.
-   - Use real subagents when available and appropriate; otherwise execute the roles sequentially.
-   - Keep outputs evidence-bound and verify subagent claims before using them.
-
-5. **Drafting and critical analysis**
+4. **Drafting and revision**
    - Read `references/drafting-and-critical-analysis.md`.
-   - Draft from the approved plan and verified sources.
-   - Make every substantive paragraph perform a clear claim, evidence, interpretation, limitation, and link-back function.
+   - Draft from the structure plan and evidence map.
+   - Use revision passes to improve paragraph function, evidence fit, interpretation, scope, citation prose, and reader flow.
 
-6. **Citation, figure, table, and data handling**
-   - For citations, use `references/research-and-citation.md`.
-   - For figures, tables, and data analysis, use `references/visuals-tables-data.md`.
-   - Verify metadata, permission, source relevance, and claim strength before including any item.
+5. **Figures, tables, and data**
+   - Read `references/visuals-tables-data.md` when the task includes figures, tables, raw data, statistical outputs, spreadsheets, GraphPad Prism files, or visual explanation.
+   - Use the authoritative analysis output supplied or generated for the task, and preserve sample sizes, statistics, units, labels, and uncertainty measures.
 
-7. **DOCX output when requested**
-   - Read `references/docx-output.md`.
-   - Apply Arial, 2.5 cm margins, 1.5 line spacing, justified body text, centered main titles, and left-aligned subheadings unless the user specifies otherwise.
+6. **DOCX output**
+   - Read `references/docx-output.md` when the user requests Word, DOCX, PDF-from-DOCX, or formatted file output.
+   - Apply the requested style guide and the default academic document formatting in that reference when no conflicting course rule is present.
 
-8. **Final QA**
+7. **Validation**
    - Read `references/qa-and-validation.md`.
-   - Apply the language, critical-analysis, citation-prose, and capacity-reallocation checks.
-   - Fail or rewrite unsupported claims, fake citations, overclaims, descriptive-only discussion, unpermitted figure reuse, decorative tables, unreallocated low-value content, and conclusions with new evidence.
+   - Check requirement fit, evidence support, citation consistency, structure, density, visual/table usefulness, data accuracy, and output formatting before delivery.
 
 ## Reference Map
 
-- `references/intake-and-planning.md`: intake fields, readiness gate, plan schema, approval loop, and plan-depth standard.
-- `references/research-and-citation.md`: evidence hierarchy, DeepResearch workflow, source validation, citation modes, formatting integrations, and citation QA.
-- `references/drafting-and-critical-analysis.md`: paragraph logic, analytic/descriptive balance, critical-analysis framework, language rules, revision discipline, and banned patterns.
-- `references/visuals-tables-data.md`: paper-figure reuse gate, generated mechanism figures, GraphPad Prism-style data workflow, and academic table rules.
-- `references/docx-output.md`: Word document formatting and output contract.
-- `references/subagents.md`: recommended subagent roles and output schemas.
-- `references/qa-and-validation.md`: plan, draft, citation, visual, DOCX, and final failure gates.
-- `skill_manifest.json`: package metadata and health commands.
-- `scripts/skill_maintenance.py`: run repository health checks.
-- `scripts/validate_essay_tutor.py`: validate package structure and English-only repository content.
+- `references/intake-and-planning.md`: requirement modelling, readiness states, density planning, structure planning, and approval flow.
+- `references/research-and-citation.md`: source selection, evidence mapping, citation placement, metadata checks, and reference-list handling.
+- `references/drafting-and-critical-analysis.md`: paragraph logic, academic tone, critical analysis, revision, and language control.
+- `references/visuals-tables-data.md`: figure, table, data, GraphPad-style analysis, captions, and result-presentation decisions.
+- `references/docx-output.md`: Word/DOCX formatting and output contract.
+- `references/subagents.md`: optional bounded roles for evidence extraction, structure review, citation checking, data/visual checking, and final QA.
+- `references/qa-and-validation.md`: final checks for plans, drafts, citations, visuals, data, DOCX files, and package health.
 
 ## Maintenance
 
@@ -108,4 +82,4 @@ python3 scripts/skill_maintenance.py doctor
 python3 scripts/validate_essay_tutor.py --strict
 ```
 
-Do not copy third-party Skill content into this Skill unless its license explicitly allows reuse. Optional integrations such as Citation.js, CSL styles, Scholar Sidekick MCP, citation-management Skills, GraphPad Prism, BioRender, or image generation should be invoked as external tools or documented workflows, not vendored without license review.
+Use optional integrations such as citation-management tools, GraphPad Prism, BioRender, image generation, spreadsheet tools, or document tools through their own Skills or local applications. Keep third-party code outside this Skill unless the licence supports bundling.

@@ -1,306 +1,156 @@
 # Intake And Planning
 
-Use this reference when starting an essay task, diagnosing missing information, or generating a detailed plan.
+Use this reference when starting an academic writing task, interpreting an assignment brief, extracting rubric requirements, or preparing a structure plan.
 
-## Intake Fields
+## AssignmentBrief
 
-Collect the minimum information needed for the current step.
-
-Required when available:
-
-| Field | What to capture | Why it matters |
-| --- | --- | --- |
-| Essay topic or exact question | Exact wording, whether the title can be changed, and whether it is an assessed prompt | Defines scope and command verb |
-| Word limit | Upper limit, lower limit, tolerance, and whether title, references, captions, figures, and tables count | Controls density and section budget |
-| Academic level | High school, undergraduate, master's, doctoral, professional, or journal level | Sets depth and citation density |
-| Course/module/faculty | Official course context and learning outcomes | Prevents off-scope research drift |
-| Required format | Chat draft, Markdown, DOCX, PDF, headings, abstract, numbered sections, figures, tables | Controls output shape |
-| Citation style | APA 7, Harvard, Vancouver, AMA, IEEE, Chicago, MLA, journal style, or university style | Controls in-text and reference format |
-| Source base | Lecture slides, notes, reading list, required papers, uploaded papers, textbooks, datasets | Sets evidence hierarchy |
-| Rubric | Marking criteria, learning outcomes, feedback, grade descriptors | Sets examiner fit |
-| Deadline/stage | Planning only, first draft, revision, final polish, file generation | Controls workflow depth |
-| Language | Final language and whether notes can be bilingual | Controls prose output |
-
-Strongly recommended:
-
-| Field | Use |
-| --- | --- |
-| Target grade or standard | Calibrate depth, originality, and QA threshold |
-| Required source count/type | Enforce primary papers, reviews, textbooks, guidelines, or recent papers |
-| Recency rule | Include recent literature without deleting classic evidence |
-| User's intended argument | Improve thesis alignment |
-| Forbidden sources/content | Avoid prohibited sources or theories |
-| Figure/table/data needs | Route to visual or data workflow |
-| Previous feedback | Correct recurring weaknesses |
-| Preferred essay examples | Extract transferable style rules only, not factual claims |
-
-## Ask User Tool Gate
-
-Detailed planning requires confirmed requirements. Do not guess, default, preselect, or predict missing essay requirements before the plan.
-
-Use native `request_user_input` / ask-user UI for material user decisions when that capability is available. If it is unavailable, ask the same questions in normal chat and keep them concise.
-
-Ask one to three concise questions per turn when any required field is missing, ambiguous, contradictory, or not directly verifiable from the prompt, uploaded files, official course material, or local files. Use concrete options when useful, but do not choose on the user's behalf.
-
-Ask-user turns should:
-
-- contain only decisions that affect the essay plan, evidence strategy, citation style, or final format;
-- offer meaningful mutually exclusive choices when the answer can be structured;
-- put the recommended option first only when the academic or workflow rationale is clear;
-- include a one-sentence explanation of why the decision matters;
-- avoid long plain-text questionnaires when ask-user UI is available.
-
-Use ask-user for these requirement decisions when they are not already verified:
-
-- academic level;
-- final language;
-- output form, including chat draft, Markdown, DOCX, PDF, headings, figures, tables, or appendices;
-- word or page limit and whether title, reference list, captions, figures, and tables count;
-- citation style and local style guide;
-- source base, including lecture slides, required readings, uploaded files, textbooks, or external literature;
-- rubric, marking standard, learning outcomes, and target grade;
-- reference-list inclusion and minimum or maximum source count;
-- figure, table, data, or appendix expectations.
-
-Before planning, classify every missing or unclear item as:
+Build a compact `AssignmentBrief` from the prompt and supplied material:
 
 ```yaml
-UserDecisionNeeded:
-  field:
-  question_to_user:
-  why_it_matters:
-  acceptable_answers:
-  source_checked:
-```
-
-Examples:
-
-- Missing citation style: ask the user which style or course guide to follow before planning citation strategy.
-- Missing academic level: ask the user whether the essay is high school, undergraduate, master's, doctoral, professional, or journal level before calibrating depth.
-- Missing word or page limit: ask for the limit and what counts toward it before planning section density.
-- Missing rubric or marking standard: ask whether the user has one. If the user confirms none exists, record `confirmed_none` and continue.
-
-Only verified facts may enter `confirmed_requirements`. A requirement is verified when it is stated by the user or present in reliable source material inspected for this task.
-
-## EssaySkillConfig
-
-Create or conceptually maintain:
-
-```yaml
-EssaySkillConfig:
-  essay_question:
-  topic:
-  command_verb:
-  academic_level:
-  course_context:
-  word_limit:
-    minimum:
-    maximum:
-    tolerance:
-    included_items:
-  format:
+AssignmentBrief:
+  task_type:
+  exact_question_or_title:
+  essay_purpose:
+  academic_context:
+  intended_reader_or_marker:
+  word_limit_or_expected_scope:
+  output_form:
+  final_language:
   citation_style:
   source_base:
-  rubric:
-  required_sources:
-  forbidden_sources:
-  figure_table_data_needs:
-  target_standard:
-  language:
-  output_requested:
+  rubric_or_marking_evidence:
+  user_preferences:
+  useful_constraints:
+  evidence_gaps:
 ```
 
-## InputReadinessReport
+Use the smallest brief that supports the current task. A quick revision may need only question, source base, output form, and citation style; a new essay usually benefits from academic level, word limit or expected scope, source base, citation style, output format, final language, and target quality.
 
-Before planning or drafting, produce internally or visibly when useful:
+## Readiness States
+
+Classify each material item before planning:
 
 ```yaml
-InputReadinessReport:
-  ready_for:
-    - research
-    - detailed_plan
-    - draft
-    - docx
-  confirmed_requirements:
-  open_user_decisions:
-  evidence_available:
-  evidence_missing:
-  next_action:
+ReadinessState:
+  verified_from_materials:
+  inferred_from_context:
+  user_confirmed:
+  user_preference_needed:
+  evidence_gap:
 ```
 
-Readiness rules:
+Use these states to decide the next action:
 
-- `ready_for.detailed_plan` is false while `open_user_decisions` is non-empty.
-- `ready_for.research` may be true before all user decisions are complete only for source discovery that does not depend on unresolved requirements.
-- `ready_for.draft` is false until the plan is approved.
-- `ready_for.docx` is false until file output and formatting requirements are confirmed.
+- `verified_from_materials`: use directly and cite the source of the requirement when useful.
+- `inferred_from_context`: use as a working assumption and make it visible in the Brief Check.
+- `user_confirmed`: use as the planning basis.
+- `user_preference_needed`: ask a concise question because the answer changes structure, evidence, citation style, or output.
+- `evidence_gap`: record the gap and shape the plan around what can be supported.
 
-## Tutor Planning Loop
+## Intake Sources
 
-After intake and source discovery, co-design the plan before presenting it as final.
+Use assignment evidence in this order:
 
-The loop is:
+1. Exact prompt, brief, rubric, learning outcomes, and marking descriptors.
+2. User-provided files, teacher feedback, examples, datasets, and analysis outputs.
+3. Course slides, handbooks, required readings, and local style guides.
+4. User preferences for target grade, output form, language, and workflow.
+5. External academic sources when the assignment benefits from more evidence.
 
-```text
-Summarize confirmed requirements
--> Explain the next planning choice and why it matters
--> Ask the user to choose or confirm
--> Update the working plan state
--> Repeat until the plan is decision-complete
--> Present the final plan for approval
-```
+## Interaction Depth
 
-Use this loop for high-impact planning decisions such as:
+Scale the interaction to the clarity of the assignment:
 
-- thesis direction or argumentative stance;
-- scope boundary and excluded material;
-- section architecture and order;
-- level of mechanism detail versus critical discussion;
-- source strategy, including classic papers, recent papers, official course material, or reviews;
-- figure, table, and data inclusion;
-- target standard, density, and risk tolerance for ambitious analysis.
+- **Sparse prompt**: ask foundational questions about academic level, word limit or expected scope, citation style, final language, output format, source base, and target quality before planning.
+- **Partial prompt**: ask only the missing items that change structure, evidence depth, citation strategy, or output form.
+- **Complete prompt**: summarise the brief and ask the user to confirm or correct it before presenting the plan.
 
-Tutor-style planning rules:
+Use interaction to make the plan reliable, not to collect cosmetic preferences.
 
-- Teach the tradeoff before asking. Example: explain that a mechanism-heavy plan may score well for technical depth but can crowd out critical evaluation in a short essay.
-- Ask targeted decisions instead of dumping a complete plan for passive approval.
-- Keep a concise working-plan summary after important decisions so the user can correct direction early.
-- Do not emit the formal detailed plan while major plan preferences are unresolved.
-- Do not use ask-user for cosmetic preferences that will not change the essay plan.
+## Brief Check
 
-Plan Mode handling:
-
-- If native Codex Plan Mode is active, follow its rules for conversational planning and produce the final decision-complete essay plan inside a `<proposed_plan>` block.
-- If Plan Mode is not active, run the same tutor loop in normal chat and label the final plan clearly before requesting approval.
-- Never state or imply that this Skill can switch Codex into Plan Mode by itself.
-
-## DeepResearch Before Plan
-
-Before a detailed plan, perform enough source work to avoid generic structure:
-
-```text
-Topic Deconstruction
--> Key Concepts
--> Competing Models or Mechanisms
--> Seminal Papers
--> Recent Evidence
--> Methodological Limits
--> Clinical, Translational, or Theoretical Implications
--> Critical Debates
--> Figure/Table Opportunities
--> Citation Map
-```
-
-Do not turn orientation sources into final evidence. Verify paper metadata and claim relevance before adding citations to the plan.
-
-## Plan Depth Standard
-
-A valid plan must go below heading level. The main body must specify subtitles and what each subtitle will argue.
-
-Minimum plan shape:
+Present a Brief Check before the first full essay plan:
 
 ```yaml
-EssayPlan:
+BriefCheck:
   confirmed_requirements:
-    essay_question:
-    academic_level:
-    word_or_page_limit:
-    citation_style:
-    output_format:
-    final_language:
-    source_base:
-    rubric_or_marking_standard:
-  open_user_decisions: []
-  essay_question:
-  interpreted_scope:
-  working_thesis:
-  word_limit_strategy:
-  proposed_title:
+  inferred_requirements:
+  evidence_gaps:
+  plan_changing_questions:
+  next_step:
+```
+
+Keep the Brief Check concise. It should help the user double-check the task, especially when the original request provides only a title or broad topic.
+
+## User Questions
+
+Ask user questions when the answer materially changes the plan and cannot be verified from local material. Good questions choose between meaningful academic or workflow tradeoffs, such as:
+
+- final output form;
+- citation style or local style guide;
+- intended target standard;
+- word limit or expected scope;
+- academic level;
+- final language;
+- whether to prioritise course material, external literature, or user-provided data;
+- how to handle conflicting teacher feedback, rubric criteria, or examples.
+
+When native ask-user UI is available, use it for material decisions. In normal chat, ask the same decision as a short direct question.
+
+## Density Calibration
+
+Set section density by judgement rather than fixed ratios. Give more space to content that has:
+
+- higher rubric value or examiner emphasis;
+- greater conceptual difficulty;
+- more evidence to compare;
+- more analysis, uncertainty, or limitation to explain;
+- a stronger role in answering the question;
+- a higher need for reader context;
+- data, figure, or method details that affect interpretation.
+
+Compress content that mainly repeats context already established, lists facts without changing the argument, or can be handled by a citation, table, figure, or short linking phrase.
+
+## Structure Planning
+
+A useful plan states what each section will do, what evidence it uses, and why the section deserves its density:
+
+```yaml
+StructurePlan:
+  working_title:
+  interpreted_task:
+  thesis_or_central_answer:
+  user_confirmed_brief:
   section_plan:
-    introduction:
+    - heading:
       function:
-      content_sequence:
-      key_terms_to_define:
-      thesis_move:
-    main_body:
-      - heading:
-        section_function:
-        subheadings:
-          - subtitle:
-            specific_content:
-            key_claim:
-            evidence_needed:
-            analytic_angle:
-            possible_citations:
-        transition_to_next_section:
-    discussion:
-      synthesis_paragraph:
-      limitations_paragraph:
-      future_direction_paragraph:
-    conclusion:
-      final_answer:
-      no_new_evidence_rule:
+      key_claims:
+      evidence_sources:
+      expected_depth:
+      figure_table_or_data_role:
+      critical_move:
   citation_strategy:
-    intensive_reading_citations:
-    broad_support_citations:
-    classic_papers:
-    recent_papers:
-  figure_table_strategy:
-    figures:
-    tables:
-    data_analysis:
-  critical_thinking_strategy:
-    main_body_analytic_targets:
-    discussion_analytic_targets:
+  output_strategy:
+  open_items:
 ```
 
-Do not output a formal detailed plan if `open_user_decisions` contains any item. Ask the next required user question instead.
+Prefer section functions over generic headings. For example, "compare mechanisms that explain the result" is more useful than "Discussion".
 
-## Section Logic
+## Planning With Exemplars
 
-Introduction:
+Use exemplars, teacher reports, and feedback to identify transferable features:
 
-- define only terms needed for the question;
-- establish why the topic matters;
-- set the scope boundary;
-- state the thesis;
-- preview organising logic, not a list of every later subsection.
+- section order and proportional emphasis;
+- paragraph function and density;
+- figure, table, and caption pattern;
+- style of result reporting;
+- level of citation detail;
+- tone, precision, and critical stance.
 
-Main body:
+Treat topic-specific claims from exemplars as leads. Use them in the final work only when the claim is supported by course material, user data, or verified sources.
 
-- divide the argument into subtitles and, when needed, sub-subtitles;
-- assign each subsection a claim, evidence need, and analytic function;
-- prevent mechanism catalogues by explaining what each mechanism proves or distinguishes.
+## Approval Flow
 
-Discussion:
+For new essay creation, present a Brief Check first, then a decision-complete plan for user double-check. In Codex Plan Mode, use the required `<proposed_plan>` format. Outside Plan Mode, use a concise plan in normal chat.
 
-- first paragraph synthesises the main body without repeating it as a list;
-- second paragraph evaluates limitations, evidence strength, uncertainty, methods, translation, or model boundaries;
-- third paragraph gives future direction or unresolved questions when appropriate.
-
-Conclusion:
-
-- answer the question directly;
-- synthesise the thesis;
-- add no new evidence.
-
-## Approval Loop
-
-Workflow:
-
-```text
-Generate Plan v0.1
--> User modifies
--> Generate Plan v0.2 with change log
--> User modifies again
--> Repeat until user approves
--> Draft from approved plan
-```
-
-Rules:
-
-- Do not draft the final essay before approval unless the user explicitly requests it.
-- Revise only the requested parts unless a requested change creates a dependency elsewhere.
-- Preserve stable approved components.
-- Keep thesis, section hierarchy, paragraph logic, citation strategy, critical-thinking points, and visual/data strategy visible in each major plan revision.
-- Treat "Approve Plan", "approved", "go ahead", or equivalent wording as the drafting trigger.
+Draft from the confirmed plan. If the user changes requirements, update the brief and plan before drafting.
