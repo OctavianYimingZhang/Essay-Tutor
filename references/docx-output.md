@@ -17,6 +17,7 @@ DOCXFormat:
   font:
     family: Arial
     size: Word default unless specified
+    color: black unless assignment material explicitly requires another colour
   paragraph:
     line_spacing: 1.5
     body_alignment: justified
@@ -25,6 +26,7 @@ DOCXFormat:
   headings:
     main_title: centered
     subheadings: left_aligned
+    color: black unless assignment material explicitly requires another colour
   references:
     style: requested citation style
   figures:
@@ -47,6 +49,8 @@ Build the structure that fits the assignment type:
 
 Use headings that help the reader navigate the argument or report. Number headings when the assignment, discipline, or document length makes numbering useful.
 
+Keep the document body assignment-facing. Treat course-stage labels, working notes, internal labels, workflow state, and planning metadata as planning information rather than body content unless the assignment explicitly asks for them.
+
 ## Implementation Guidance
 
 Use a DOCX library, document tool, or existing office application workflow that can set:
@@ -60,13 +64,22 @@ Use a DOCX library, document tool, or existing office application workflow that 
 - table borders;
 - page breaks where they improve document structure.
 
+Set the default body style and all heading styles to black academic text for essay-style Word outputs unless the assignment explicitly supplies another visual style. Do not rely on built-in Word heading colours when black headings are expected.
+
 For generated tables, prefer clean academic rules: top rule, header rule, bottom rule, caption above, and notes below when needed.
 
 For figures, include a caption and source, authorship, permission, or data note when relevant.
 
 ## DOCX QA
 
-Before delivery, check:
+Before delivery, run a visual format check:
+
+1. Inspect document structure and styles: page size, margins, font family, body alignment, line spacing, heading colour, citation/reference formatting, section breaks, and page breaks.
+2. Render the DOCX to page images when rendering tools are available.
+3. Inspect all pages or representative pages plus the first and last page for clipping, overlap, excessive blank space, unexpected blank pages, heading colour, font substitution, broken reference wrapping, table/figure placement, and page-limit fit.
+4. Fix the DOCX and re-render after any formatting correction.
+
+Use this checklist during the same pass:
 
 ```yaml
 DOCXQA:
@@ -77,7 +90,12 @@ DOCXQA:
   captions_near_items:
   headings_consistent:
   body_text_readable:
+  black_academic_text_when_required:
+  no_internal_metadata_in_body:
+  no_unrequested_blue_heading_style:
+  no_excessive_spacing_or_blank_final_pages:
+  page_or_word_limit_fit:
   exported_pdf_matches_docx_when_pdf_requested:
 ```
 
-Inspect the generated file or exported PDF when possible, especially after adding figures, tables, page breaks, or references.
+If rendering tools are unavailable, perform structural DOCX checks and state that visual render QA was not completed.

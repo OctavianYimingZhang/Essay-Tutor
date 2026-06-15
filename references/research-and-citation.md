@@ -42,6 +42,18 @@ EvidenceMap:
 
 Use `evidence_role` values such as background, method, empirical result, theory, counterpoint, limitation, comparison, definition, or data output.
 
+For claim-heavy writing, build the map close to sentence level. Every non-obvious factual, mechanistic, theoretical, clinical, methodological, comparative, or evaluative claim should have nearby citation support. Use citation density to match claim density: more claims, mechanisms, comparisons, contested findings, and evaluative judgments call for more local evidence. Prefer adding precise support, narrowing the claim, or removing weak claims over lowering citation density for cosmetic smoothness.
+
+Before drafting a paragraph, check:
+
+- which sentences need close evidence citation;
+- which sentences synthesise several sources;
+- which claims are common orientation and can remain uncited;
+- which unsupported claims should be researched, narrowed, or removed;
+- which limitation or critical claim needs a source rather than assertion alone.
+
+Calibrate citation density by knowledge content, not by a fixed ratio. Dense sections on mechanism, diagnosis, intervention effects, methods, statistics, theory comparison, or study limitations usually need citations in most sentences. Lower-density orientation is acceptable only when the sentence is genuinely common framing, already supported by the surrounding cited claim, or does no substantive evidential work.
+
 ## Research Workflow
 
 For literature-backed work, deconstruct the topic into:
@@ -79,6 +91,8 @@ Use citations for:
 - definitions that are discipline-specific;
 - data, statistics, and results;
 - claims about prior literature, models, or debates;
+- comparative claims about one theory, method, intervention, dataset, or explanation being stronger, weaker, broader, narrower, more consistent, or more limited than another;
+- evaluative claims about study quality, generalisability, causal strength, measurement limits, inconsistency, or explanatory reach;
 - course-specific claims when the source is a lecture, handbook, or assigned reading.
 
 ## Citation Modes
@@ -89,6 +103,10 @@ Use both modes when useful:
 - **Synthesis citation**: several sources support a broader pattern, contrast, or state of the field.
 
 For synthesis citations, keep the sentence specific enough that all cited sources genuinely contribute.
+
+For critical-analysis sentences, keep the citation close to the specific weakness or contrast. If the sentence says a study fails to quantify, uses a small sample, cannot support causality, or conflicts with later evidence, cite the study being evaluated and, where useful, the source that demonstrates the contrast.
+
+Use comparison with user drafts or exemplars to calibrate citation density when available. If the user's stronger draft uses more local evidence, diagnose whether that density reflects real claim load and transfer the evidence-handling pattern without copying the prose.
 
 ## Metadata And Reference List
 

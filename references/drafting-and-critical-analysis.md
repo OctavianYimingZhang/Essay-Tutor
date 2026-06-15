@@ -15,7 +15,17 @@ Use the structure plan as the drafting contract:
 - output format;
 - critical-analysis targets.
 
+Before drafting, confirm that the tutoring conversation has resolved:
+
+- thesis direction or competing thesis options;
+- evidence burden and expected citation density;
+- critical stance and limits of the argument;
+- whether user-draft structure, paragraphs, phrasing patterns, or source choices should be preserved, revised, or replaced;
+- output use, such as submission draft, revision notes, model answer, or DOCX file.
+
 When new evidence changes the best answer, update the plan visibly before changing the direction of the draft.
+
+When drafting or revising, make the writing choices traceable to the confirmed plan. Explain consequential structure, evidence, or revision decisions briefly when they affect the user's learning or approval; keep internal workflow metadata out of the final essay body.
 
 ## Paragraph Logic
 
@@ -44,6 +54,16 @@ Critical analysis means showing how evidence answers the question and how far th
 
 Choose the move that best fits the paragraph's evidence and the assignment question.
 
+Read `critical-writing-bank.md` when the task needs more critical stance, discussion depth, study evaluation, theory limits, method limits, or constructive suggestions. Use that bank as a set of reusable reasoning and language patterns. Adapt phrases to the topic rather than inserting generic templates.
+
+Use this sequence for critical-writing sentences:
+
+```text
+evidence problem -> critical move -> source support -> interpretation -> thesis link
+```
+
+Examples of evidence problems include limited measurement, inconsistent results, weak causal inference, narrow population, dated evidence, untested mechanism, construct ambiguity, and a gap between theory and clinical practice.
+
 ## Density And Detail
 
 Match detail to academic value:
@@ -56,6 +76,8 @@ Match detail to academic value:
 - Use concise prose when a citation can support familiar context.
 
 Effective density usually increases where the rubric rewards analysis, where evidence conflicts, where methods shape interpretation, or where data require careful explanation.
+
+When a page or word limit is an upper bound, use remaining space for relevant detail that improves the answer: stronger mechanism explanation, closer source comparison, clearer evidence boundaries, more explicit critical interpretation, and better links back to the question.
 
 ## Section Guidance
 
@@ -115,6 +137,14 @@ For data-supported reports, state:
 
 Use the discussion to integrate the main body with the essay aim, literature, theory, limitations, alternatives, and future work. Prioritise interpretation over repetition of earlier sections.
 
+In discussion-heavy essays, include critical moves that fit the evidence base:
+
+- highlight inadequacies in previous studies when the field leaves a question unresolved;
+- identify weaknesses in a single study or paper when a key source carries too much argumentative weight;
+- evaluate theory or argument limits when the model explains some findings better than others;
+- evaluate method or practice limits when design, measurement, sampling, timing, or intervention delivery affects interpretation;
+- offer constructive suggestions when the next research or practice step follows from the limitation.
+
 ### Conclusion
 
 Close by answering the question directly. Connect the strongest supported findings to the assignment aim and broader significance.
@@ -140,6 +170,7 @@ Use revision passes with a defined purpose:
 4. **Density fit**: detail matches rubric emphasis, evidence complexity, and reader need.
 5. **Citation fit**: citations support the exact claims beside them.
 6. **Language fit**: sentences are specific, coherent, and academically controlled.
+7. **Tutor fit**: the revision reflects the agreed learning goal, preserves appropriate user ownership, and makes major changes explainable to the user.
 
 When shortening, preserve the reasoning chain and compress lower-value orientation, repetition, or source-route prose first. Reallocate saved space to interpretation, comparison, evidence strength, scope, or link-back when the assignment benefits from it.
 

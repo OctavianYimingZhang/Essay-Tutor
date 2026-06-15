@@ -8,15 +8,15 @@ The Skill is designed for assessed essays, lab reports, literature reviews, prop
 
 | Area | Capability |
 | --- | --- |
-| Intake | Builds and double-checks an assignment brief from the prompt, rubric, course material, user files, examples, and preferences. |
+| Intake | Diagnoses assignment materials, user drafts, generated drafts, rubrics, examples, screenshots, and preferences before planning. |
 | Readiness | Marks requirements as verified from materials, inferred from context, user-confirmed, user preference needed, or evidence gap. |
-| Planning | Creates a confirmed essay or report plan that links section function, evidence, citation strategy, output density, and figure/table/data needs. |
+| Planning | Creates a confirmed essay or report plan that explains argument flow, evidence burden, citation strategy, output density, and figure/table/data needs. |
 | Research | Builds a source and evidence map from course material, required readings, user files, authoritative academic sources, and verified external literature. |
 | Drafting | Writes from the structure plan with paragraph-level claim, evidence, interpretation, boundary, and link-back logic. |
 | Revision | Improves question fit, evidence fit, interpretation, citation prose, density, and reader flow. |
-| Citation | Supports claim-led citation placement, metadata checks, and reference-list consistency in the requested style. |
+| Citation | Supports claim-led citation placement, sentence-level evidence mapping, metadata checks, and reference-list consistency in the requested style. |
 | Visuals and data | Uses figures, tables, diagrams, data outputs, and GraphPad-style workflows when they improve comparison, method clarity, mechanism explanation, synthesis, or result interpretation. |
-| DOCX | Formats Word documents with Arial, 2.5 cm margins, 1.5 line spacing, justified body text, centred titles, and left-aligned subheadings by default. |
+| DOCX | Formats Word documents with Arial, 2.5 cm margins, 1.5 line spacing, justified body text, centred titles, left-aligned subheadings, and black academic text by default. |
 | QA | Checks requirement fit, evidence support, citation consistency, structure, density, visual/table usefulness, data accuracy, and output formatting. |
 
 ## Install
@@ -33,7 +33,7 @@ python3 scripts/skill_maintenance.py doctor
 
 ```text
 $essay-tutor
-Help me plan an undergraduate essay on seasonal affective disorder as a model of seasonal light signalling. Start with a brief check, ask what you need, then make a plan for my confirmation.
+Help me plan an assessed essay from the supplied brief and readings. Diagnose the materials, ask plan-changing questions, then make a structure plan for my confirmation.
 ```
 
 ```text
@@ -45,12 +45,14 @@ Use the supplied lab handbook, rubric, spreadsheet, and GraphPad Prism file to p
 
 ```mermaid
 flowchart TD
-    A["Academic writing request"] --> B["Brief check"]
-    B --> C["Requirement model and evidence map"]
-    C --> D["Structure plan for confirmation"]
-    D --> E["Draft or revision from confirmed plan"]
-    E --> F["Citation, visual, data, and format validation"]
-    F --> G["Final text or DOCX"]
+    A["Academic writing request"] --> B["Material diagnosis"]
+    B --> C["Asking Questions"]
+    C --> D["Locked brief"]
+    D --> E["Evidence and comparison map"]
+    E --> F["Structure plan for confirmation"]
+    F --> G["Draft or revision from confirmed plan"]
+    G --> H["Visual, citation, data, and format validation"]
+    H --> I["Final text or DOCX"]
 ```
 
 ## Evidence Boundary
@@ -70,8 +72,9 @@ Claims, statistics, mechanisms, citation metadata, and figure content are ground
 
 The Skill uses interaction-first planning for new essay creation:
 
-- It starts with a Brief Check when the assignment is not already fully specified.
-- It plans essays with Abstract, Introduction, Main Body subsections, Discussion, Conclusion, and References where sources are used.
+- It diagnoses supplied materials before asking plan-changing questions through Codex Asking Questions when available.
+- It compares user drafts with generated results when both are supplied before planning revision.
+- It plans essays with natural section rationales, not mechanical planning fields.
 - It drafts from the confirmed plan.
 - In Codex Plan Mode, it uses the required `<proposed_plan>` format for formal plans.
 

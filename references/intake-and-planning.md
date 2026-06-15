@@ -21,10 +21,43 @@ AssignmentBrief:
   rubric_or_marking_evidence:
   user_preferences:
   useful_constraints:
-  evidence_gaps:
+  confirmation_status:
+  unresolved_plan_changing_items:
 ```
 
-Use the smallest brief that supports the current task. A quick revision may need only question, source base, output form, and citation style; a new essay usually benefits from academic level, word limit or expected scope, source base, citation style, output format, final language, and target quality.
+Use the smallest brief that supports the current task. A quick revision may need only question, source base, output form, and citation style; a new essay usually benefits from word limit or expected scope, source base, citation style, output format, final language, target quality, and any course-stage requirement that changes marking criteria or genre expectations.
+
+Lock the brief before planning. A locked brief has no unresolved item that could change structure, evidence depth, citation strategy, final language, output form, section density, or the expected standard.
+
+Treat academic standard as a writing-quality target, not a routine form field. Unless the assignment material or user states otherwise, aim for the strongest academic depth the task and source base can support. Ask about course stage only when it would materially change evidence selection, theoretical depth, writing identity, or marking fit.
+
+## Material Diagnosis
+
+Before asking questions or planning, inspect the materials the user supplied:
+
+- assignment brief, rubric, learning outcomes, style guide, and lecturer notes;
+- user draft, generated draft, prior feedback, exemplar, screenshots, images, figures, tables, datasets, and DOCX/PDF files;
+- requested output format, visual examples, page or word limit, citation style, and source base.
+
+When both a user draft and a generated result are available, build a comparison diagnosis before planning revision:
+
+```yaml
+ComparisonDiagnosis:
+  argument_depth:
+  body_length_and_limit_fit:
+  source_range:
+  claim_level_citation_density:
+  paragraph_roles:
+  critical_stance:
+  discussion_quality:
+  figure_table_or_data_use:
+  visual_docx_format_problems:
+  user_draft_strengths_to_preserve:
+  generated_result_limitations:
+  revision_priorities:
+```
+
+Use this diagnosis to decide what to preserve, what to strengthen, and what to avoid in the revised plan. Treat prior generated outputs as diagnostic evidence only: do not reuse them as templates, hidden prompts, or content sources.
 
 ## Readiness States
 
@@ -33,8 +66,8 @@ Classify each material item before planning:
 ```yaml
 ReadinessState:
   verified_from_materials:
-  inferred_from_context:
   user_confirmed:
+  inferred_from_context:
   user_preference_needed:
   evidence_gap:
 ```
@@ -42,10 +75,12 @@ ReadinessState:
 Use these states to decide the next action:
 
 - `verified_from_materials`: use directly and cite the source of the requirement when useful.
-- `inferred_from_context`: use as a working assumption and make it visible in the Brief Check.
 - `user_confirmed`: use as the planning basis.
+- `inferred_from_context`: record only during intake; resolve it through user confirmation or source verification before planning.
 - `user_preference_needed`: ask a concise question because the answer changes structure, evidence, citation style, or output.
-- `evidence_gap`: record the gap and shape the plan around what can be supported.
+- `evidence_gap`: record only during intake; resolve it before planning if it could change structure, evidence, citation style, language, output form, section density, or target standard.
+
+Do not carry `inferred_from_context`, `user_preference_needed`, or plan-changing `evidence_gap` items into a StructurePlan. If they remain, continue asking questions or request the missing material instead of writing the plan.
 
 ## Intake Sources
 
@@ -61,26 +96,37 @@ Use assignment evidence in this order:
 
 Scale the interaction to the clarity of the assignment:
 
-- **Sparse prompt**: ask foundational questions about academic level, word limit or expected scope, citation style, final language, output format, source base, and target quality before planning.
+- **Sparse prompt**: ask foundational questions about word limit or expected scope, citation style, final language, output format, source base, target quality, and any course-stage requirement that affects marking before planning.
 - **Partial prompt**: ask only the missing items that change structure, evidence depth, citation strategy, or output form.
 - **Complete prompt**: summarise the brief and ask the user to confirm or correct it before presenting the plan.
 
-Use interaction to make the plan reliable, not to collect cosmetic preferences.
+Use interaction to make the plan reliable, not to collect cosmetic preferences. Every academic writing task needs a confirmed brief before structure planning, even when the original prompt appears complete. Continue the conversation until the goal, audience, output use, thesis direction, evidence burden, source base, structure tradeoffs, and revision boundaries are clear enough to teach from.
 
-## Brief Check
+## Requirements Check
 
-Present a Brief Check before the first full essay plan:
+Present a Requirements Check before the first full writing plan unless the user has already supplied a complete confirmed brief. Prefer Codex Asking Questions or `request_user_input` when available. Use normal chat only when the native question UI is unavailable.
 
 ```yaml
-BriefCheck:
+RequirementsCheck:
   confirmed_requirements:
-  inferred_requirements:
-  evidence_gaps:
+  requirements_to_confirm:
+  material_gaps_to_resolve:
   plan_changing_questions:
   next_step:
 ```
 
-Keep the Brief Check concise. It should help the user double-check the task, especially when the original request provides only a title or broad topic.
+Keep the Requirements Check concise. It should help the user lock the task before planning, especially when the original request provides only a title or broad topic.
+
+Ask enough to resolve plan-changing requirements. Common plan-changing requirements include:
+
+- course-stage or marking standard when it changes genre, evidence, or evaluation;
+- word limit or expected scope;
+- citation style or local style guide;
+- final language;
+- output form;
+- source base, including whether to use course material, external literature, user files, or data;
+- target quality or marking standard;
+- rubric, brief, learning outcomes, or required readings.
 
 ## User Questions
 
@@ -90,12 +136,14 @@ Ask user questions when the answer materially changes the plan and cannot be ver
 - citation style or local style guide;
 - intended target standard;
 - word limit or expected scope;
-- academic level;
+- course-stage or marking standard when it changes genre, evidence, or evaluation;
 - final language;
 - whether to prioritise course material, external literature, or user-provided data;
 - how to handle conflicting teacher feedback, rubric criteria, or examples.
 
-When native ask-user UI is available, use it for material decisions. In normal chat, ask the same decision as a short direct question.
+When native ask-user UI is available, use it for material decisions, including during Plan Mode. Provide meaningful choices and require an explicit user selection for plan-changing items. In normal chat, ask the same decision as a short direct question.
+
+Use assumptions only for non-plan-changing details, and make them visible in the plan.
 
 ## Density Calibration
 
@@ -111,9 +159,11 @@ Set section density by judgement rather than fixed ratios. Give more space to co
 
 Compress content that mainly repeats context already established, lists facts without changing the argument, or can be handled by a citation, table, figure, or short linking phrase.
 
+When an assignment gives an upper page or word limit, plan to use the available space for relevant evidence, mechanism explanation, comparison between sources, critical interpretation, and limitations until the argument is appropriately developed near the limit. When the prompt gives a minimum, range, or expected scope, calibrate length by task purpose, knowledge density, source complexity, and the depth needed to satisfy the brief.
+
 ## Structure Planning
 
-A useful plan states what each section will do, what evidence it uses, and why the section deserves its density:
+A useful plan explains the argument in natural language rather than mechanically filling labels. It should show the user's confirmed choices, why the section order works, what each section needs to prove, what evidence is required, where critical evaluation belongs, and how the final output will be formatted.
 
 ```yaml
 StructurePlan:
@@ -123,34 +173,36 @@ StructurePlan:
   user_confirmed_brief:
   section_plan:
     - heading:
-      function:
-      key_claims:
-      evidence_sources:
-      expected_depth:
-      figure_table_or_data_role:
-      critical_move:
+      rationale:
+      claims_to_develop:
+      evidence_to_verify:
+      critical_or_comparative_work:
+      formatting_or_visual_role:
   citation_strategy:
+  comparison_diagnosis:
   output_strategy:
   open_items:
 ```
 
-Prefer section functions over generic headings. For example, "compare mechanisms that explain the result" is more useful than "Discussion".
+Only create a StructurePlan after the brief is locked. `open_items` may contain only non-plan-changing notes, such as optional refinements that do not affect structure, evidence depth, citation strategy, language, output form, section density, or target standard.
+
+Prefer argument-facing section rationales over generic headings. For example, "compare the two mechanisms that explain the result and identify the stronger causal evidence" is more useful than "Discussion".
 
 ## Planning With Exemplars
 
-Use exemplars, teacher reports, and feedback to identify transferable features:
+Use exemplars, visual examples, teacher reports, and feedback to identify transferable features:
 
 - section order and proportional emphasis;
 - paragraph function and density;
 - figure, table, and caption pattern;
 - style of result reporting;
 - level of citation detail;
-- tone, precision, and critical stance.
+- tone, precision, critical stance, and formatting discipline.
 
 Treat topic-specific claims from exemplars as leads. Use them in the final work only when the claim is supported by course material, user data, or verified sources.
 
 ## Approval Flow
 
-For new essay creation, present a Brief Check first, then a decision-complete plan for user double-check. In Codex Plan Mode, use the required `<proposed_plan>` format. Outside Plan Mode, use a concise plan in normal chat.
+For academic writing tasks, present a Requirements Check first, lock the brief, then present a decision-complete plan for user double-check. In Codex Plan Mode, use the required `<proposed_plan>` format. Outside Plan Mode, use a concise plan in normal chat.
 
-Draft from the confirmed plan. If the user changes requirements, update the brief and plan before drafting.
+Draft from the confirmed plan. If the user changes requirements, update and relock the brief before revising the plan or drafting.

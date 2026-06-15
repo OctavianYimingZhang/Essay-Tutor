@@ -1,4 +1,4 @@
 interface:
   display_name: "Essay Tutor"
-  short_description: "Double-check briefs, plan, research, draft, revise, cite, validate, and format academic writing"
-  default_prompt: "Use $essay-tutor to start with a brief check, ask plan-changing questions, build a confirmed structure plan, draft from that plan, validate citations and data, and create a formatted DOCX when needed."
+  short_description: "Tutor academic writing with material diagnosis, deep questioning, evidence mapping, drafting, citation QA, and DOCX visual checks"
+  default_prompt: "Use $essay-tutor to diagnose the assignment materials, ask plan-changing questions with Codex Asking Questions when available, build a locked brief and natural structure plan, draft or revise from that plan, validate claim-level citations and critical analysis, and visually QA formatted DOCX output when needed."

@@ -10,21 +10,29 @@ Check that the plan answers these questions:
 PlanQA:
   exact_task_understood:
   assignment_brief_built:
-  brief_check_presented:
+  requirements_check_presented:
+  locked_brief_present:
   user_double_check_captured:
   readiness_states_recorded:
+  no_plan_changing_inferred_requirements:
+  no_plan_changing_evidence_gaps:
+  no_plan_changing_open_items:
   evidence_map_started:
+  comparison_diagnosis_used_when_available:
   structure_matches_rubric_or_brief:
   essay_structure_present_when_task_is_essay:
   main_body_subsections_named_when_task_is_essay:
-  section_density_justified:
+  section_rationales_explain_argument_flow:
+  section_density_justified_by_evidence_and_purpose:
   citation_strategy_clear:
   figure_table_data_strategy_clear:
   output_format_clear:
   user_preferences_handled:
 ```
 
-A strong plan explains what each section does, what evidence it uses, and how it contributes to the assignment.
+A strong plan explains the argument flow, evidence burden, section rationale, citation strategy, and revision boundaries in natural language. It should not read like a mechanical field-by-field worksheet.
+
+Do not show a plan if any unresolved item could change structure, evidence depth, citation strategy, final language, output form, section density, or target standard. Ask another question, request the missing material, or obtain an explicit user selection instead.
 
 ## Draft QA
 
@@ -40,6 +48,8 @@ DraftQA:
   paragraph_functions_clear:
   interpretation_close_to_evidence:
   boundaries_or_uncertainty_integrated:
+  critical_moves_fit_evidence:
+  non_obvious_claims_have_nearby_citations:
   section_density_matches_value_and_complexity:
   citation_style_consistent:
   results_match_authoritative_analysis:
@@ -50,12 +60,38 @@ Use the check to guide revision. Strengthen support, qualify claims, reorganise 
 
 ## Pre-Draft QA
 
-Before drafting a new essay, check:
+Before drafting a new academic writing task, check:
 
-- the Brief Check has been presented or the user has supplied equivalent confirmed requirements;
+- the Requirements Check has been presented or the user has supplied equivalent confirmed requirements;
+- the brief is locked before any StructurePlan is shown;
+- every plan-changing requirement is verified from materials or explicitly selected by the user;
+- no `inferred_requirements`, `evidence_gaps`, or `open_items` remain if they could change structure, evidence depth, citation strategy, final language, output form, section density, or target standard;
 - the plan includes Abstract, Introduction, Main Body subsections, Discussion, Conclusion, and References where sources are used;
 - the user has confirmed the plan or provided corrections that have been integrated;
 - word limit or expected scope, citation style, final language, output format, source base, and target quality are handled in the plan.
+
+## Comparison QA
+
+When both a user draft and a generated result are available, check:
+
+```yaml
+ComparisonQA:
+  argument_depth:
+  body_length_and_limit_fit:
+  source_range:
+  claim_level_citation_density:
+  paragraph_roles:
+  critical_stance:
+  discussion_quality:
+  figure_table_or_data_use:
+  visual_docx_format_problems:
+  user_draft_strengths_preserved:
+  generated_result_limitations_addressed:
+  transferable_strengths_preserved:
+  revision_priorities_reflected_in_plan:
+```
+
+Use this comparison before planning revision. Preserve useful structure, evidence density, and critical stance from the stronger draft while correcting weak formatting, unsupported claims, low-density sections, and generated-result weaknesses. Treat generated results as diagnostic artifacts only.
 
 ## Citation QA
 
@@ -64,6 +100,9 @@ Check:
 - every in-text citation has a matching reference entry;
 - every reference entry has a clear role in the work;
 - each cited source supports the sentence or paragraph where it appears;
+- non-obvious factual, mechanistic, theoretical, clinical, methodological, comparative, and evaluative claims have nearby citation support;
+- critical claims about study weakness, theory limits, method limits, inconsistency, or generalisability are supported by the evaluated source or a source that demonstrates the contrast;
+- low citation density has been resolved by adding verified support, narrowing claims, or removing unsupported statements rather than by treating citation density as a cosmetic issue;
 - metadata is verified where identifiers, dates, or publication details matter;
 - citation style is consistent with the assignment or local guide.
 
@@ -88,9 +127,19 @@ Use this check for figures, tables, diagrams, statistical summaries, GraphPad ou
 
 Check:
 
+- the DOCX was visually checked through rendered page images when rendering tools are available;
+- format problems found in render review were fixed and re-rendered;
 - requested or default academic formatting is applied;
 - headings, body text, captions, tables, and references are readable and consistent;
+- academic text and headings are black unless the assignment material explicitly requires colour;
+- internal planning metadata, course-stage notes, working labels, and workflow state are kept out of the body;
+- spacing is visually coherent and does not create excessive line gaps;
+- final pages contain meaningful content rather than accidental blanks;
+- page breaks support reading flow;
 - figures and tables are near the relevant discussion where practical;
+- figure scale and caption placement work in the rendered page image;
+- reference entries wrap cleanly and remain readable;
+- the document uses the available page or word budget for evidence, explanation, comparison, and critical analysis when the assignment sets an upper limit;
 - exported PDF reflects the latest DOCX when PDF is requested;
 - document structure supports the assignment rather than adding formatting clutter.
 

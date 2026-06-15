@@ -20,6 +20,7 @@ REQUIRED_FILES = [
     "references/intake-and-planning.md",
     "references/research-and-citation.md",
     "references/drafting-and-critical-analysis.md",
+    "references/critical-writing-bank.md",
     "references/visuals-tables-data.md",
     "references/docx-output.md",
     "references/subagents.md",
