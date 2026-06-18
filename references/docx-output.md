@@ -17,6 +17,7 @@ DOCXFormat:
   font:
     family: Arial
     size: Word default unless specified
+    title_font_size: user-selected value; default to 14 pt main title when not otherwise specified
     color: black unless assignment material explicitly requires another colour
   paragraph:
     line_spacing: 1.5
@@ -25,6 +26,7 @@ DOCXFormat:
     subheading_alignment: left
   headings:
     main_title: centered
+    main_title_size: user-selected title_font_size; default 14 pt
     subheadings: left_aligned
     color: black unless assignment material explicitly requires another colour
   references:
@@ -51,6 +53,8 @@ Use headings that help the reader navigate the argument or report. Number headin
 
 Keep the document body assignment-facing. Treat course-stage labels, working notes, internal labels, workflow state, and planning metadata as planning information rather than body content unless the assignment explicitly asks for them.
 
+For DOCX, Word, LaTeX, or formatted file output, first display the planned document format, then ask the user about typography, font size, margins, line spacing, title style, and reference formatting with `scripts/build_intake_questions.py docx-format` or `scripts/build_intake_questions.py document-format` unless the brief or style guide already specifies those details. Use `14 pt main title` as the default title-size choice for DOCX when the user accepts the default academic format or does not provide a custom title-size preference.
+
 ## Implementation Guidance
 
 Use a DOCX library, document tool, or existing office application workflow that can set:
@@ -59,6 +63,10 @@ Use a DOCX library, document tool, or existing office application workflow that 
 - paragraph alignment;
 - line spacing;
 - font family;
+- body font size;
+- main title font size;
+- title alignment and title style;
+- reference-list formatting;
 - heading styles;
 - captions;
 - table borders;
@@ -85,6 +93,7 @@ Use this checklist during the same pass:
 DOCXQA:
   latest_text_used:
   requested_format_applied:
+  title_font_size_applied:
   citations_and_references_match:
   figures_and_tables_have_captions:
   captions_near_items:

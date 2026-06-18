@@ -10,13 +10,13 @@ The Skill is designed for assessed essays, lab reports, literature reviews, prop
 | --- | --- |
 | Intake | Diagnoses assignment materials, user drafts, generated drafts, rubrics, examples, screenshots, and preferences before planning. |
 | Readiness | Marks requirements as verified from materials, inferred from context, user-confirmed, user preference needed, or evidence gap. |
-| Planning | Creates confirmed section-by-section and final plans that explain argument flow, evidence burden, citation quantity, critical-analysis stance, format requirements, output density, and figure/table/data needs. |
+| Planning | Creates plan-first, paragraph-level section plans and final plans that explain argument flow, evidence burden, citation quantity, critical-analysis moves, format requirements, output density, and figure/table/data needs. |
 | Research | Builds a source and evidence map from course material, required readings, user files, authoritative academic sources, and verified external literature. |
 | Drafting | Writes from the structure plan with paragraph-level claim, evidence, interpretation, boundary, and link-back logic. |
 | Revision | Improves question fit, evidence fit, interpretation, citation prose, density, and reader flow. |
 | Citation | Supports claim-led citation placement, sentence-level evidence mapping, metadata checks, and reference-list consistency in the requested style. |
 | Visuals and data | Uses figures, tables, diagrams, data outputs, and GraphPad-style workflows when they improve comparison, method clarity, mechanism explanation, synthesis, or result interpretation. |
-| DOCX | Formats Word documents with Arial, 2.5 cm margins, 1.5 line spacing, justified body text, centred titles, left-aligned subheadings, and black academic text by default. |
+| DOCX | Formats Word documents with Arial, 2.5 cm margins, 1.5 line spacing, justified body text, user-selected main title size, centred titles, left-aligned subheadings, and black academic text by default. |
 | QA | Checks requirement fit, evidence support, citation consistency, structure, density, visual/table usefulness, data accuracy, and output formatting. |
 
 ## Install
@@ -73,9 +73,13 @@ Claims, statistics, mechanisms, citation metadata, and figure content are ground
 The Skill uses interaction-first planning for new essay creation:
 
 - It expects Codex Plan Mode for native Asking Questions because `request_user_input` is a Plan Mode tool.
+- It displays the relevant brief, paragraph, format, or critical-analysis plan before every Asking Questions batch.
 - It generates `request_user_input` payloads with `scripts/build_intake_questions.py` before asking plan-changing questions.
-- It asks for citation quantity and format requirements before planning when those choices are not supplied by the brief.
-- It presents each detailed section plan and the CriticalAnalysisPlan for user feedback before the final integrated plan.
+- It asks for citation quantity as an approximate count plus density when those choices are not supplied by the brief.
+- It generates format options from context, normally distinguishing chat text, DOCX, LaTeX, and user-specified output.
+- It asks for typography, font size, margins, line spacing, title style, and reference formatting when DOCX, Word, LaTeX, or formatted output is selected.
+- It presents each detailed section plan as paragraph-level choices with real labels such as Abstract, Introduction, Main Body Paragraph 1, Discussion Paragraph 1, and Conclusion.
+- It presents the CriticalAnalysisPlan after the paragraph plan as specific critical moves to insert into body paragraphs or Discussion.
 - It compares user drafts with generated results when both are supplied before planning revision.
 - It plans essays with natural section rationales, not mechanical planning fields.
 - It drafts from the confirmed plan.

@@ -142,6 +142,8 @@ def check_intake_question_policy(errors: list[str]) -> None:
         "agents/openai.yaml": ROOT / "agents/openai.yaml",
         "references/intake-and-planning.md": ROOT / "references/intake-and-planning.md",
         "references/drafting-and-critical-analysis.md": ROOT / "references/drafting-and-critical-analysis.md",
+        "references/critical-writing-bank.md": ROOT / "references/critical-writing-bank.md",
+        "references/docx-output.md": ROOT / "references/docx-output.md",
         "references/qa-and-validation.md": ROOT / "references/qa-and-validation.md",
     }
     text_by_rel = {rel: path.read_text(encoding="utf-8") for rel, path in files.items() if path.exists()}
@@ -150,7 +152,11 @@ def check_intake_question_policy(errors: list[str]) -> None:
         "SKILL.md": [
             "python3 scripts/build_intake_questions.py sparse",
             "call `request_user_input` with the emitted JSON object",
-            "citation quantity and format requirements",
+            "Before every Asking Questions call",
+            "citation quantity",
+            "format requirements",
+            "title font size for DOCX output",
+            "paragraph-level choices",
             "CriticalAnalysisPlan",
         ],
         "references/intake-and-planning.md": [
@@ -158,29 +164,68 @@ def check_intake_question_policy(errors: list[str]) -> None:
             "call `request_user_input` with the emitted JSON object",
             "citation quantity or density",
             "format requirements",
+            "scripts/build_intake_questions.py docx-format",
+            "scripts/build_intake_questions.py document-format",
+            "title_font_size",
             "free-form answer",
             "scripts/build_intake_questions.py brief-details",
             "SectionPlan",
+            "paragraph-level plan",
+            "real paragraph role",
+            "task-specific options",
             "CriticalAnalysisPlan",
+            "critical moves",
+            "body paragraphs or Discussion",
+            "critical-writing-bank.md",
             "scripts/build_intake_questions.py section-review",
             "scripts/build_intake_questions.py critical-analysis",
         ],
+        "references/docx-output.md": [
+            "title_font_size",
+            "14 pt main title",
+            "scripts/build_intake_questions.py docx-format",
+            "scripts/build_intake_questions.py document-format",
+            "typography",
+            "margins",
+            "line spacing",
+            "reference formatting",
+        ],
         "references/drafting-and-critical-analysis.md": [
-            "approved section plans",
-            "CriticalAnalysisPlan approval",
+            "approved or selected paragraph-level section plans",
+            "critical-move-level CriticalAnalysisPlan selection",
+            "insertion points",
             "confirmed citation quantity",
             "format requirements",
         ],
         "agents/openai.yaml": [
-            "generate request_user_input payloads with scripts/build_intake_questions.py",
-            "citation quantity and format requirements",
-            "review each detailed section plan and CriticalAnalysisPlan",
+            "display the relevant brief or decision plan before every Asking Questions batch",
+            "generate dynamic request_user_input payloads with scripts/build_intake_questions.py",
+            "citation count plus density",
+            "context-generated output format",
+            "DOCX or LaTeX formatting details",
+            "paragraph-level section plan",
+            "real paragraph labels",
+            "body paragraphs or Discussion",
         ],
         "references/qa-and-validation.md": [
+            "plan_or_decision_context_displayed_before_questions",
             "citation_quantity_confirmed",
             "format_requirements_confirmed",
+            "title_font_size_confirmed",
             "section_by_section_plans_presented",
+            "paragraph_level_section_feedback_captured",
+            "section_questions_use_real_paragraph_labels",
+            "section_options_are_task_specific",
             "critical_analysis_plan_presented",
+            "critical_move_selection_captured",
+            "critical_moves_have_body_or_discussion_insertion_points",
+        ],
+        "README.md": [
+            "displays the relevant brief, paragraph, format, or critical-analysis plan",
+            "citation quantity as an approximate count plus density",
+            "chat text, DOCX, LaTeX",
+            "real labels such as Abstract",
+            "body paragraphs or Discussion",
         ],
     }
     for rel, phrases in required_phrases.items():
@@ -192,7 +237,7 @@ def check_intake_question_policy(errors: list[str]) -> None:
 
     script = ROOT / "scripts/build_intake_questions.py"
     payloads: dict[str, object] = {}
-    for scenario in ("sparse", "complete", "brief-details", "section-review", "critical-analysis"):
+    for scenario in ("sparse", "complete", "brief-details", "docx-format", "document-format", "section-review", "critical-analysis"):
         try:
             completed = subprocess.run(
                 [sys.executable, str(script), scenario],
@@ -224,13 +269,16 @@ def check_intake_question_policy(errors: list[str]) -> None:
             for option in item.get("options", [])
             if isinstance(option, dict)
         ]
-        if not any(label == "Default format (Recommended)" for label in labels):
-            errors.append(f"{scenario} payload must include the default format option.")
+        if not any(re.search(r"\d+\s*-\s*\d+", label) for label in labels):
+            errors.append(f"{scenario} payload must include a citation option with an approximate count range.")
+        for label in labels:
+            if label == "Default format (Recommended)":
+                errors.append(f"{scenario} payload must not use the old generic default format option.")
 
     scenario_required_ids = {
         "brief-details": "source_base",
-        "section-review": "section_plan_feedback",
-        "critical-analysis": "critical_analysis_feedback",
+        "docx-format": "title_font_size",
+        "document-format": "document_typography",
     }
     for scenario, question_id in scenario_required_ids.items():
         payload = payloads.get(scenario)
@@ -241,6 +289,67 @@ def check_intake_question_policy(errors: list[str]) -> None:
         if question_id not in question_ids:
             errors.append(f"{scenario} payload must include {question_id}.")
 
+    generic_section_labels = {
+        "Include as planned (Recommended)",
+        "Condense",
+        "Omit or replace",
+        "Approve section (Recommended)",
+    }
+    generic_critical_labels = {
+        "Include (Recommended)",
+        "Use lightly",
+        "Exclude",
+        "Approve critique (Recommended)",
+        "More critical",
+        "More balanced",
+    }
+
+    payload = payloads.get("section-review")
+    if isinstance(payload, dict):
+        questions = payload.get("questions", [])
+        headers = [item.get("header", "") for item in questions if isinstance(item, dict)]
+        question_text = " ".join(item.get("question", "") for item in questions if isinstance(item, dict))
+        labels = [
+            option.get("label", "")
+            for item in questions
+            if isinstance(item, dict)
+            for option in item.get("options", [])
+            if isinstance(option, dict)
+        ]
+        if not any(header in {"Abstract", "Introduction"} for header in headers):
+            errors.append("section-review payload must use real paragraph labels in the default example.")
+        if any(re.fullmatch(r"P\d+", header) for header in headers):
+            errors.append("section-review payload must not use P-number headers.")
+        if re.search(r"\bP\d+\b", question_text):
+            errors.append("section-review payload must not refer to P-number paragraph labels.")
+        forbidden = generic_section_labels.intersection(labels)
+        if forbidden:
+            errors.append(f"section-review payload must not use generic fixed options: {sorted(forbidden)}")
+        if not any("opening" in label.lower() or "mechanism" in label.lower() or "evidence" in label.lower() for label in labels):
+            errors.append("section-review payload must include task-specific tradeoff options.")
+
+    payload = payloads.get("critical-analysis")
+    if isinstance(payload, dict):
+        questions = payload.get("questions", [])
+        headers = [item.get("header", "") for item in questions if isinstance(item, dict)]
+        question_text = " ".join(item.get("question", "") for item in questions if isinstance(item, dict))
+        labels = [
+            option.get("label", "")
+            for item in questions
+            if isinstance(item, dict)
+            for option in item.get("options", [])
+            if isinstance(option, dict)
+        ]
+        if any(re.fullmatch(r"Move \d+", header) for header in headers):
+            errors.append("critical-analysis payload must not use numbered move headers.")
+        if re.search(r"\bMove \d+\b", question_text):
+            errors.append("critical-analysis payload must not refer to numbered critical moves.")
+        forbidden = generic_critical_labels.intersection(labels)
+        if forbidden:
+            errors.append(f"critical-analysis payload must not use generic fixed options: {sorted(forbidden)}")
+        if not any("body" in label.lower() or "discussion" in label.lower() or "paragraph" in label.lower() for label in labels):
+            errors.append("critical-analysis payload must include body or Discussion insertion options.")
+
     payload = payloads.get("brief-details")
     if isinstance(payload, dict):
         questions = payload.get("questions", [])
@@ -248,6 +357,23 @@ def check_intake_question_policy(errors: list[str]) -> None:
         for question_id in ("final_language", "citation_style", "source_base"):
             if question_id not in question_ids:
                 errors.append(f"brief-details payload must include {question_id}.")
+        labels = [
+            option.get("label", "")
+            for item in questions
+            if isinstance(item, dict)
+            for option in item.get("options", [])
+            if isinstance(option, dict)
+        ]
+        for label in (
+            "Assignment style (Recommended)",
+            "Harvard",
+            "APA 7",
+            "Course material (Recommended)",
+            "Peer-reviewed literature",
+            "Mixed source base",
+        ):
+            if label not in labels:
+                errors.append(f"brief-details payload must preserve fixed Style/Sources option {label}.")
 
 
 def main() -> int:
