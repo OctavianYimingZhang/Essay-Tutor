@@ -13,16 +13,18 @@ intake -> material diagnosis -> Asking Questions -> locked brief -> evidence/com
 
 Keep the workflow light. Read only the reference files that match the current task, and use the user's assignment material as the main source of truth.
 
+Plan Mode is required for the native Asking Questions flow because `request_user_input` is a Plan Mode tool. A Skill cannot switch Codex collaboration mode by itself; when Plan Mode is active, use the script-backed payload workflow below to call `request_user_input` directly.
+
 ## Core Principles
 
 - Work as a tutor, not a silent ghostwriter: diagnose, ask, explain the writing choices that matter, and draft only after the user has confirmed the direction.
 - Start academic writing tasks by reconstructing and confirming the assignment brief with the user before planning.
-- Make the first user-facing output for any new or unclear writing request a focused requirements check, not a structure plan.
-- Create a structure plan only after all plan-changing requirements are verified from materials or explicitly selected by the user.
-- Build a requirement model from the prompt, rubric, brief, course material, examples, and user preferences before planning detailed prose.
+- Make the first user-facing output for any new or unclear writing request a Codex Asking Questions decision batch generated from the intake payload script.
+- Create a structure plan only after all plan-changing requirements are verified from materials or explicitly selected by the user, including citation quantity and format requirements.
+- Build a requirement model from the prompt, rubric, brief, course material, examples, and user preferences before planning detailed prose. Keep that model internal unless the user explicitly asks to see it.
 - Default to the strongest academic standard the brief can support. Ask about course-stage requirements only when they change marking criteria, genre conventions, permissible evidence, or writing identity.
 - Use verified evidence before drafting substantive claims, statistics, methods, citations, lecturer expectations, or source metadata.
-- Keep asking with Codex Asking Questions, including during planning, until thesis direction, evidence burden, structure choice, revision boundaries, and output expectations are clear.
+- Keep asking with Codex Asking Questions, including during planning, until thesis direction, evidence burden, citation quantity, format requirements, structure choice, critical-analysis stance, revision boundaries, and output expectations are clear. In Plan Mode, generate the intake payload with `python3 scripts/build_intake_questions.py sparse` or `python3 scripts/build_intake_questions.py complete`, then call `request_user_input` with the emitted JSON object.
 - Choose output density by rubric emphasis, concept difficulty, evidence volume, analysis needed, reader context, and available assignment space.
 - When an assignment gives an upper page or word limit, use available space for evidence, explanation, comparison, and critical interpretation until the argument is appropriately developed near the limit.
 - Treat exemplars and teacher feedback as transferable structure, density, and tone evidence; use topic claims from them only when independently supported by the assignment material or sources.
@@ -37,10 +39,10 @@ Keep the workflow light. Read only the reference files that match the current ta
 
 1. **Intake and material diagnosis**
    - Read `references/intake-and-planning.md`.
-   - Build an `AssignmentBrief` that records task type, title or question, academic context, output form, citation style, source base, rubric or marking evidence, language, target quality, and useful constraints.
+   - Build an internal `AssignmentBrief` that records task type, title or question, academic context, output form, citation style, source base, rubric or marking evidence, language, target quality, and useful constraints.
    - Inspect supplied files, teacher material, exemplars, screenshots, visual examples, rubrics, generated drafts, and user drafts before asking questions.
-   - Mark each requirement as verified from materials, user-confirmed, inferred from context, user preference needed, or evidence gap.
-   - Use Codex Asking Questions, including `request_user_input` when available, to resolve every plan-changing preference, inference, and evidence gap before planning; do not replace this with a static question dump.
+   - Mark each requirement internally as verified from materials, user-confirmed, inferred from context, user preference needed, or evidence gap.
+   - In Plan Mode, generate a `request_user_input` payload with `scripts/build_intake_questions.py` and call `request_user_input` to resolve plan-changing preferences, citation quantity, format requirements, inferences, and evidence gaps before planning.
    - If a user draft and a generated result are both supplied, compare them before planning revision.
 
 2. **Evidence and comparison map**
@@ -51,9 +53,9 @@ Keep the workflow light. Read only the reference files that match the current ta
 
 3. **Structure plan**
    - Create a structure plan only after the assignment brief is locked.
-   - Use `references/intake-and-planning.md` to create a natural section plan that explains each section's role in the argument, the evidence it needs, the reason for the chosen order, and how it serves the user's confirmed goal.
+   - Use `references/intake-and-planning.md` to create detailed section-by-section plans that explain each section's role in the argument, paragraph-level claim path, evidence needs, citation-density target, critical-analysis work, order, and fit with the user's confirmed goal.
    - For essay tasks, plan Abstract, Introduction, Main Body subsections, Discussion, Conclusion, and References when sources are used.
-   - Present the plan for user double-check. In Codex Plan Mode, use the required `<proposed_plan>` block; outside Plan Mode, use the same plan structure in normal chat.
+   - Present each section plan and the CriticalAnalysisPlan for user feedback before presenting the final integrated plan. In Codex Plan Mode, use the required `<proposed_plan>` block for the final plan when active mode requires it; outside Plan Mode, use the same plan structure in normal chat.
    - Draft from the confirmed plan.
 
 4. **Drafting and revision**

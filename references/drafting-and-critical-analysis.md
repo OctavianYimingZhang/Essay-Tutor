@@ -10,16 +10,21 @@ Use the structure plan as the drafting contract:
 - scope and audience;
 - section functions;
 - evidence sources;
-- citation strategy;
+- citation strategy and confirmed citation quantity;
 - figure, table, or data role;
-- output format;
-- critical-analysis targets.
+- output format and format requirements;
+- approved section plans;
+- approved critical-analysis targets.
 
 Before drafting, confirm that the tutoring conversation has resolved:
 
 - thesis direction or competing thesis options;
 - evidence burden and expected citation density;
+- citation quantity and citation style;
+- format requirements, including default format or custom user instructions;
 - critical stance and limits of the argument;
+- section-by-section plan approval;
+- CriticalAnalysisPlan approval;
 - whether user-draft structure, paragraphs, phrasing patterns, or source choices should be preserved, revised, or replaced;
 - output use, such as submission draft, revision notes, model answer, or DOCX file.
 
@@ -64,6 +69,8 @@ evidence problem -> critical move -> source support -> interpretation -> thesis 
 
 Examples of evidence problems include limited measurement, inconsistent results, weak causal inference, narrow population, dated evidence, untested mechanism, construct ambiguity, and a gap between theory and clinical practice.
 
+Draft critical analysis from the approved `CriticalAnalysisPlan`. Keep each evaluative move attached to a specific paragraph function, source, method, theory, mechanism, dataset, or interpretation. Do not add a new major criticism during drafting unless it is first reconciled with the confirmed plan or is required by newly verified evidence.
+
 ## Density And Detail
 
 Match detail to academic value:
@@ -105,6 +112,8 @@ Use Main Body subsections to organise the central explanation, evidence, compari
 - key claims;
 - evidence basis;
 - link to the central answer;
+- citation-density target matched to the confirmed citation quantity;
+- critical-analysis role matched to the approved SectionPlan;
 - density matched to concept difficulty and evidence complexity.
 
 ### Introduction

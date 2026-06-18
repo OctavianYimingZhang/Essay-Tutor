@@ -10,7 +10,10 @@ Check that the plan answers these questions:
 PlanQA:
   exact_task_understood:
   assignment_brief_built:
-  requirements_check_presented:
+  asking_questions_batch_presented:
+  plan_mode_used_for_native_question_flow:
+  intake_payload_generated_with_script:
+  request_user_input_called_with_generated_payload:
   locked_brief_present:
   user_double_check_captured:
   readiness_states_recorded:
@@ -20,9 +23,16 @@ PlanQA:
   evidence_map_started:
   comparison_diagnosis_used_when_available:
   structure_matches_rubric_or_brief:
+  citation_quantity_confirmed:
+  format_requirements_confirmed:
+  section_by_section_plans_presented:
+  each_section_plan_user_feedback_captured:
+  critical_analysis_plan_presented:
+  critical_analysis_plan_user_feedback_captured:
   essay_structure_present_when_task_is_essay:
   main_body_subsections_named_when_task_is_essay:
   section_rationales_explain_argument_flow:
+  section_plans_have_paragraph_level_claim_paths:
   section_density_justified_by_evidence_and_purpose:
   citation_strategy_clear:
   figure_table_data_strategy_clear:
@@ -30,9 +40,9 @@ PlanQA:
   user_preferences_handled:
 ```
 
-A strong plan explains the argument flow, evidence burden, section rationale, citation strategy, and revision boundaries in natural language. It should not read like a mechanical field-by-field worksheet.
+A strong plan explains the argument flow, evidence burden, confirmed citation quantity, section rationale, paragraph-level claim path, citation strategy, critical-analysis plan, format requirements, and revision boundaries in natural language. It should not read like a mechanical field-by-field worksheet.
 
-Do not show a plan if any unresolved item could change structure, evidence depth, citation strategy, final language, output form, section density, or target standard. Ask another question, request the missing material, or obtain an explicit user selection instead.
+Do not show a final integrated plan if any unresolved item could change structure, evidence depth, citation quantity, citation strategy, final language, output form, format requirements, critical-analysis stance, section density, or target standard. Ask another question, request the missing material, present the relevant section plan for revision, or obtain an explicit user selection instead.
 
 ## Draft QA
 
@@ -41,6 +51,10 @@ Check that the draft has:
 ```yaml
 DraftQA:
   confirmed_plan_reflected:
+  confirmed_citation_quantity_reflected:
+  confirmed_format_requirements_reflected:
+  approved_section_plans_reflected:
+  approved_critical_analysis_plan_reflected:
   essay_structure_followed_when_task_is_essay:
   main_body_subsections_used_when_task_is_essay:
   claims_supported_by_sources_or_data:
@@ -62,13 +76,20 @@ Use the check to guide revision. Strengthen support, qualify claims, reorganise 
 
 Before drafting a new academic writing task, check:
 
-- the Requirements Check has been presented or the user has supplied equivalent confirmed requirements;
+- a Codex Asking Questions batch has been used for plan-changing requirements, or the user has supplied equivalent confirmed requirements;
+- Plan Mode was used for the native Asking Questions flow;
+- the intake payload was generated with `scripts/build_intake_questions.py` or matched its schema;
+- `request_user_input` was called with that generated payload before plan-changing requirements were treated as confirmed;
 - the brief is locked before any StructurePlan is shown;
 - every plan-changing requirement is verified from materials or explicitly selected by the user;
-- no `inferred_requirements`, `evidence_gaps`, or `open_items` remain if they could change structure, evidence depth, citation strategy, final language, output form, section density, or target standard;
+- citation quantity or density is confirmed by user selection or assignment material;
+- format requirements are confirmed by default selection, supplied style guide, or explicit custom user instructions;
+- no `inferred_requirements`, `evidence_gaps`, or `open_items` remain if they could change structure, evidence depth, citation quantity, citation strategy, final language, output form, format requirements, critical-analysis stance, section density, or target standard;
+- each SectionPlan has been presented and user feedback has been captured before the final integrated plan;
+- a direct CriticalAnalysisPlan has been presented and user feedback has been captured before the final integrated plan;
 - the plan includes Abstract, Introduction, Main Body subsections, Discussion, Conclusion, and References where sources are used;
 - the user has confirmed the plan or provided corrections that have been integrated;
-- word limit or expected scope, citation style, final language, output format, source base, and target quality are handled in the plan.
+- word limit or expected scope, citation style, citation quantity, final language, output format, format requirements, source base, critical-analysis stance, and target quality are handled in the plan.
 
 ## Comparison QA
 

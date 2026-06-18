@@ -10,7 +10,7 @@ The Skill is designed for assessed essays, lab reports, literature reviews, prop
 | --- | --- |
 | Intake | Diagnoses assignment materials, user drafts, generated drafts, rubrics, examples, screenshots, and preferences before planning. |
 | Readiness | Marks requirements as verified from materials, inferred from context, user-confirmed, user preference needed, or evidence gap. |
-| Planning | Creates a confirmed essay or report plan that explains argument flow, evidence burden, citation strategy, output density, and figure/table/data needs. |
+| Planning | Creates confirmed section-by-section and final plans that explain argument flow, evidence burden, citation quantity, critical-analysis stance, format requirements, output density, and figure/table/data needs. |
 | Research | Builds a source and evidence map from course material, required readings, user files, authoritative academic sources, and verified external literature. |
 | Drafting | Writes from the structure plan with paragraph-level claim, evidence, interpretation, boundary, and link-back logic. |
 | Revision | Improves question fit, evidence fit, interpretation, citation prose, density, and reader flow. |
@@ -72,7 +72,10 @@ Claims, statistics, mechanisms, citation metadata, and figure content are ground
 
 The Skill uses interaction-first planning for new essay creation:
 
-- It diagnoses supplied materials before asking plan-changing questions through Codex Asking Questions when available.
+- It expects Codex Plan Mode for native Asking Questions because `request_user_input` is a Plan Mode tool.
+- It generates `request_user_input` payloads with `scripts/build_intake_questions.py` before asking plan-changing questions.
+- It asks for citation quantity and format requirements before planning when those choices are not supplied by the brief.
+- It presents each detailed section plan and the CriticalAnalysisPlan for user feedback before the final integrated plan.
 - It compares user drafts with generated results when both are supplied before planning revision.
 - It plans essays with natural section rationales, not mechanical planning fields.
 - It drafts from the confirmed plan.

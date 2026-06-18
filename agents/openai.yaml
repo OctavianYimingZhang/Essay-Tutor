@@ -1,4 +1,4 @@
 interface:
   display_name: "Essay Tutor"
-  short_description: "Tutor academic writing with material diagnosis, deep questioning, evidence mapping, drafting, citation QA, and DOCX visual checks"
-  default_prompt: "Use $essay-tutor to diagnose the assignment materials, ask plan-changing questions with Codex Asking Questions when available, build a locked brief and natural structure plan, draft or revise from that plan, validate claim-level citations and critical analysis, and visually QA formatted DOCX output when needed."
+  short_description: "Tutor academic writing with material diagnosis, deep questioning, section planning, critical-analysis planning, citation QA, and DOCX checks"
+  default_prompt: "Use $essay-tutor in Codex Plan Mode to diagnose the assignment materials, generate request_user_input payloads with scripts/build_intake_questions.py, call request_user_input for plan-changing questions including citation quantity and format requirements, build a locked brief, review each detailed section plan and CriticalAnalysisPlan with the user before the final integrated plan, draft or revise from that plan, validate claim-level citations and critical analysis, and visually QA formatted DOCX output when needed."

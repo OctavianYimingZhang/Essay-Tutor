@@ -17,6 +17,8 @@ AssignmentBrief:
   output_form:
   final_language:
   citation_style:
+  citation_quantity:
+  format_requirements:
   source_base:
   rubric_or_marking_evidence:
   user_preferences:
@@ -25,9 +27,9 @@ AssignmentBrief:
   unresolved_plan_changing_items:
 ```
 
-Use the smallest brief that supports the current task. A quick revision may need only question, source base, output form, and citation style; a new essay usually benefits from word limit or expected scope, source base, citation style, output format, final language, target quality, and any course-stage requirement that changes marking criteria or genre expectations.
+Use the smallest brief that supports the current task. A quick revision may need only question, source base, output form, citation style, citation quantity, and format requirements; a new essay usually benefits from word limit or expected scope, source base, citation style, citation quantity, output format, final language, target quality, and any course-stage requirement that changes marking criteria or genre expectations.
 
-Lock the brief before planning. A locked brief has no unresolved item that could change structure, evidence depth, citation strategy, final language, output form, section density, or the expected standard.
+Lock the brief before planning. A locked brief has no unresolved item that could change structure, evidence depth, citation quantity, citation strategy, final language, output form, format requirements, section density, critical-analysis stance, or the expected standard.
 
 Treat academic standard as a writing-quality target, not a routine form field. Unless the assignment material or user states otherwise, aim for the strongest academic depth the task and source base can support. Ask about course stage only when it would materially change evidence selection, theoretical depth, writing identity, or marking fit.
 
@@ -37,7 +39,7 @@ Before asking questions or planning, inspect the materials the user supplied:
 
 - assignment brief, rubric, learning outcomes, style guide, and lecturer notes;
 - user draft, generated draft, prior feedback, exemplar, screenshots, images, figures, tables, datasets, and DOCX/PDF files;
-- requested output format, visual examples, page or word limit, citation style, and source base.
+- requested output format, custom format instructions, visual examples, page or word limit, citation style, citation quantity, and source base.
 
 When both a user draft and a generated result are available, build a comparison diagnosis before planning revision:
 
@@ -96,37 +98,34 @@ Use assignment evidence in this order:
 
 Scale the interaction to the clarity of the assignment:
 
-- **Sparse prompt**: ask foundational questions about word limit or expected scope, citation style, final language, output format, source base, target quality, and any course-stage requirement that affects marking before planning.
+- **Sparse prompt**: use Codex Asking Questions to lock foundational decisions about word limit or expected scope, citation style, citation quantity, final language, output format, format requirements, source base, target quality, and any course-stage requirement that affects marking before planning.
 - **Partial prompt**: ask only the missing items that change structure, evidence depth, citation strategy, or output form.
-- **Complete prompt**: summarise the brief and ask the user to confirm or correct it before presenting the plan.
+- **Complete prompt**: summarise the brief in natural language and use Codex Asking Questions to confirm it or request corrections before presenting the plan.
 
 Use interaction to make the plan reliable, not to collect cosmetic preferences. Every academic writing task needs a confirmed brief before structure planning, even when the original prompt appears complete. Continue the conversation until the goal, audience, output use, thesis direction, evidence burden, source base, structure tradeoffs, and revision boundaries are clear enough to teach from.
 
-## Requirements Check
+## Question Batch
 
-Present a Requirements Check before the first full writing plan unless the user has already supplied a complete confirmed brief. Prefer Codex Asking Questions or `request_user_input` when available. Use normal chat only when the native question UI is unavailable.
+Use a Question Batch before the first full writing plan unless the user has already supplied a complete confirmed brief. Generate the tool payload with `scripts/build_intake_questions.py sparse` for sparse or partial prompts, or `scripts/build_intake_questions.py complete` when the brief only needs confirmation. Call `request_user_input` with the emitted JSON object.
 
-```yaml
-RequirementsCheck:
-  confirmed_requirements:
-  requirements_to_confirm:
-  material_gaps_to_resolve:
-  plan_changing_questions:
-  next_step:
-```
+Keep `AssignmentBrief`, readiness states, material gaps, and planning metadata as internal working models unless the user explicitly asks to inspect them.
 
-Keep the Requirements Check concise. It should help the user lock the task before planning, especially when the original request provides only a title or broad topic.
+Ask at most one to three plan-changing questions in each `request_user_input` call. Each question should choose between meaningful academic or workflow options. When a recommended default is reasonable, make that option first. For standard sparse essay prompts, use the generated sparse payload as the first call, then use `scripts/build_intake_questions.py brief-details` if final language, citation style, or source base remain unresolved. For a complete brief, use the generated complete payload and then adapt follow-up payloads only for remaining plan-changing items. The sparse and complete payloads must ask about citation quantity and format requirements unless those exact requirements are already verified from supplied material.
 
-Ask enough to resolve plan-changing requirements. Common plan-changing requirements include:
+Ask enough to resolve plan-changing requirements before planning. Common plan-changing requirements include:
 
 - course-stage or marking standard when it changes genre, evidence, or evaluation;
 - word limit or expected scope;
 - citation style or local style guide;
+- citation quantity or density;
 - final language;
 - output form;
+- format requirements, including whether to use the default format or custom user instructions;
 - source base, including whether to use course material, external literature, user files, or data;
 - target quality or marking standard;
 - rubric, brief, learning outcomes, or required readings.
+
+When asking about format requirements, include a default option that preserves the Skill's current behaviour for the requested output type. If the user does not select that default, require explicit custom format instructions through the user's free-form answer or supplied style guide before planning.
 
 ## User Questions
 
@@ -134,14 +133,16 @@ Ask user questions when the answer materially changes the plan and cannot be ver
 
 - final output form;
 - citation style or local style guide;
+- citation quantity or density;
 - intended target standard;
 - word limit or expected scope;
 - course-stage or marking standard when it changes genre, evidence, or evaluation;
 - final language;
+- default format versus user-specified custom format;
 - whether to prioritise course material, external literature, or user-provided data;
 - how to handle conflicting teacher feedback, rubric criteria, or examples.
 
-When native ask-user UI is available, use it for material decisions, including during Plan Mode. Provide meaningful choices and require an explicit user selection for plan-changing items. In normal chat, ask the same decision as a short direct question.
+Use `request_user_input` for material decisions, including during Plan Mode. Provide meaningful choices and require an explicit user selection for plan-changing items. Build custom follow-up payloads by matching the same schema emitted by `scripts/build_intake_questions.py`.
 
 Use assumptions only for non-plan-changing details, and make them visible in the plan.
 
@@ -171,22 +172,67 @@ StructurePlan:
   interpreted_task:
   thesis_or_central_answer:
   user_confirmed_brief:
+  citation_quantity:
+  format_requirements:
+  critical_analysis_plan:
+    evaluative_questions:
+    source_quality_limits:
+    theory_or_mechanism_limits:
+    comparison_points:
+    uncertainty_or_boundary_claims:
+    thesis_link:
   section_plan:
     - heading:
+      section_function:
       rationale:
-      claims_to_develop:
+      paragraph_level_claim_path:
+      key_terms_or_concepts:
       evidence_to_verify:
+      source_types_or_named_sources:
+      citation_density_target:
       critical_or_comparative_work:
+      expected_length_or_density:
       formatting_or_visual_role:
+      transition_role:
   citation_strategy:
   comparison_diagnosis:
   output_strategy:
   open_items:
 ```
 
-Only create a StructurePlan after the brief is locked. `open_items` may contain only non-plan-changing notes, such as optional refinements that do not affect structure, evidence depth, citation strategy, language, output form, section density, or target standard.
+Only create a StructurePlan after the brief is locked. `open_items` may contain only non-plan-changing notes, such as optional refinements that do not affect structure, evidence depth, citation quantity, citation strategy, language, output form, format requirements, critical-analysis stance, section density, or target standard.
 
 Prefer argument-facing section rationales over generic headings. For example, "compare the two mechanisms that explain the result and identify the stronger causal evidence" is more useful than "Discussion".
+
+## Section-By-Section Planning
+
+Before presenting the final integrated plan, present each planned section as a standalone `SectionPlan` and ask the user for feedback with `scripts/build_intake_questions.py section-review` or a matching `request_user_input` payload. Do not move to the final integrated plan until every section plan has been approved or revised.
+
+Each `SectionPlan` must include:
+
+- heading and section function;
+- detailed argument role and reason for its position in the work;
+- paragraph-level claim path;
+- key concepts that need definition or explanation;
+- evidence to verify and source types or named sources to seek;
+- citation-density target based on the user's selected citation quantity;
+- critical or comparative work for that section;
+- expected length or density based on assignment space and evidence complexity;
+- formatting, figure, table, or visual role where relevant;
+- transition role into the next section.
+
+## Critical Analysis Plan
+
+Before the final integrated plan, present a direct `CriticalAnalysisPlan` and ask the user to approve, strengthen, balance, or redirect it with `scripts/build_intake_questions.py critical-analysis` or a matching `request_user_input` payload. The plan must identify the specific evaluation work the final draft will perform, not simply state that the writing will be critical.
+
+The `CriticalAnalysisPlan` must cover:
+
+- evaluative questions the essay or report will answer;
+- source-quality limits, including method, sample, date, measurement, or bias concerns where relevant;
+- theory, mechanism, or model limits;
+- comparisons between sources, explanations, methods, datasets, or interpretations;
+- uncertainty and boundary claims that prevent overstatement;
+- how each critical move links back to the thesis or research question.
 
 ## Planning With Exemplars
 
@@ -203,6 +249,6 @@ Treat topic-specific claims from exemplars as leads. Use them in the final work 
 
 ## Approval Flow
 
-For academic writing tasks, present a Requirements Check first, lock the brief, then present a decision-complete plan for user double-check. In Codex Plan Mode, use the required `<proposed_plan>` format. Outside Plan Mode, use a concise plan in normal chat.
+For academic writing tasks, run a `request_user_input` Question Batch first, lock the brief, present and resolve each SectionPlan, present and resolve the CriticalAnalysisPlan, then present the final integrated decision-complete plan for user double-check. In Codex Plan Mode, use the required `<proposed_plan>` format only for the final integrated plan unless the active system instructions require otherwise. Outside Plan Mode, use the same structure in normal chat.
 
 Draft from the confirmed plan. If the user changes requirements, update and relock the brief before revising the plan or drafting.
