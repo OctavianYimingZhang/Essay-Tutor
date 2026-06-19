@@ -27,7 +27,7 @@ Plan Mode is required for the native Asking Questions flow because `request_user
 - Keep asking with Codex Asking Questions, including during planning, until thesis direction, evidence burden, citation quantity, format requirements, title font size for DOCX output, structure choice, critical-analysis stance, revision boundaries, and output expectations are clear. Before every Asking Questions call, show the relevant plan or decision context in chat. In Plan Mode, generate the intake payload with `python3 scripts/build_intake_questions.py sparse` or `python3 scripts/build_intake_questions.py complete`, then call `request_user_input` with the emitted JSON object.
 - Choose output density by rubric emphasis, concept difficulty, evidence volume, analysis needed, reader context, and available assignment space.
 - When an assignment gives an upper page or word limit, use available space for evidence, explanation, comparison, and critical interpretation until the argument is appropriately developed near the limit.
-- Treat exemplars and teacher feedback as transferable structure, density, and tone evidence; use topic claims from them only when independently supported by the assignment material or sources.
+- Treat user-supplied exemplars, teacher examples, sample answers, model essays, feedback examples, and visual examples as transferable structure, density, paragraph-function, citation-density, and tone evidence. Treat topic-specific claims from those examples as leads that need support from the current assignment material, user data, course material, or verified sources before they enter the final work.
 - Use the default essay architecture for essay tasks: Abstract, Introduction, Main Body with named subsections, Discussion, Conclusion, and References when sources are used.
 - Match figures, tables, and data presentation to the work they do for the argument: comparison, mechanism, method clarity, evidence synthesis, or result interpretation.
 - Keep claims, evidence, interpretation, boundaries, and links back to the question close together.
@@ -40,7 +40,7 @@ Plan Mode is required for the native Asking Questions flow because `request_user
 1. **Intake and material diagnosis**
    - Read `references/intake-and-planning.md`.
    - Build an internal `AssignmentBrief` that records task type, title or question, academic context, output form, citation style, source base, rubric or marking evidence, language, target quality, title font size for DOCX output, and useful constraints.
-   - Inspect supplied files, teacher material, exemplars, screenshots, visual examples, rubrics, generated drafts, and user drafts before asking questions.
+   - Inspect supplied files, teacher material, user-supplied exemplars, sample answers, model essays, feedback examples, screenshots, visual examples, rubrics, generated drafts, and user drafts before asking questions.
    - Mark each requirement internally as verified from materials, user-confirmed, inferred from context, user preference needed, or evidence gap.
    - In Plan Mode, show the brief or decision context, generate a `request_user_input` payload with `scripts/build_intake_questions.py`, and call `request_user_input` to resolve plan-changing preferences, citation quantity, format requirements, title font size for DOCX output, inferences, and evidence gaps before planning.
    - If a user draft and a generated result are both supplied, compare them before planning revision.

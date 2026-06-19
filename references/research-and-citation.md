@@ -14,7 +14,7 @@ Use this source order as a guide:
 4. Primary peer-reviewed studies for specific empirical claims.
 5. Systematic reviews, meta-analyses, major reviews, textbooks, and guidelines for synthesis or orientation.
 6. Additional peer-reviewed literature found through academic search.
-7. Informal summaries, student notes, encyclopaedic pages, and exemplars as orientation clues that prompt independent verification.
+7. Informal summaries, student notes, encyclopaedic pages, and user-supplied exemplars as orientation clues that prompt independent verification.
 
 Select sources by asking:
 
@@ -106,7 +106,7 @@ For synthesis citations, keep the sentence specific enough that all cited source
 
 For critical-analysis sentences, keep the citation close to the specific weakness or contrast. If the sentence says a study fails to quantify, uses a small sample, cannot support causality, or conflicts with later evidence, cite the study being evaluated and, where useful, the source that demonstrates the contrast.
 
-Use comparison with user drafts or exemplars to calibrate citation density when available. If the user's stronger draft uses more local evidence, diagnose whether that density reflects real claim load and transfer the evidence-handling pattern without copying the prose.
+Use comparison with user drafts or user-supplied exemplars to calibrate citation density when available. If the user's stronger draft uses more local evidence, diagnose whether that density reflects real claim load and transfer the evidence-handling pattern without copying the prose.
 
 ## Metadata And Reference List
 

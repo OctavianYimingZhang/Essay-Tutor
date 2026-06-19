@@ -8,7 +8,7 @@ The Skill is designed for assessed essays, lab reports, literature reviews, prop
 
 | Area | Capability |
 | --- | --- |
-| Intake | Diagnoses assignment materials, user drafts, generated drafts, rubrics, examples, screenshots, and preferences before planning. |
+| Intake | Diagnoses assignment materials, user drafts, generated drafts, rubrics, user-supplied exemplars, sample answers, teacher examples, screenshots, and preferences before planning. |
 | Readiness | Marks requirements as verified from materials, inferred from context, user-confirmed, user preference needed, or evidence gap. |
 | Planning | Creates plan-first, paragraph-level section plans and final plans that explain argument flow, paragraph output path, proof logic, citation quantity, critical-analysis placement, format requirements, output density, and figure/table/data needs. |
 | Research | Builds a source and evidence map from course material, required readings, user files, authoritative academic sources, and verified external literature. |
@@ -97,7 +97,7 @@ The Skill chooses output density by:
 - available assignment space;
 - usefulness of figures, tables, or data displays.
 
-Teacher feedback and exemplars are used to extract transferable structure, tone, density, and reporting patterns. Topic-specific claims are grounded in the current assignment sources.
+Teacher feedback, user-supplied exemplars, sample answers, model essays, and visual examples are used to extract transferable structure, tone, density, paragraph function, citation density, and reporting patterns. Topic-specific claims are grounded in the current assignment sources.
 
 ## Optional Integrations
 

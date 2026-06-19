@@ -39,7 +39,7 @@ Treat academic standard as a writing-quality target, not a routine form field. U
 Before asking questions or planning, inspect the materials the user supplied:
 
 - assignment brief, rubric, learning outcomes, style guide, and lecturer notes;
-- user draft, generated draft, prior feedback, exemplar, screenshots, images, figures, tables, datasets, and DOCX/PDF files;
+- user draft, generated draft, prior feedback, user-supplied exemplar, teacher example, sample answer, model essay, feedback example, screenshot, image, figure, table, dataset, and DOCX/PDF file;
 - requested output format, custom format instructions, visual examples, page or word limit, citation style, citation quantity, title font size, and source base.
 
 When both a user draft and a generated result are available, build a comparison diagnosis before planning revision:
@@ -259,7 +259,7 @@ Break the `CriticalAnalysisPlan` into concrete critical moves such as field inad
 
 ## Planning With Exemplars
 
-Use exemplars, visual examples, teacher reports, and feedback to identify transferable features:
+Use user-supplied exemplars, teacher examples, sample answers, model essays, feedback examples, visual examples, teacher reports, and feedback to identify transferable features:
 
 - section order and proportional emphasis;
 - paragraph function and density;
@@ -268,7 +268,7 @@ Use exemplars, visual examples, teacher reports, and feedback to identify transf
 - level of citation detail;
 - tone, precision, critical stance, and formatting discipline.
 
-Treat topic-specific claims from exemplars as leads. Use them in the final work only when the claim is supported by course material, user data, or verified sources.
+Treat topic-specific claims from exemplars as leads. Bring them into the final work when the claim is supported by current assignment material, user data, course material, or verified sources.
 
 ## Approval Flow
 

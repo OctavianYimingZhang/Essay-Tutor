@@ -232,7 +232,7 @@ def document_format_payload(context: dict[str, Any]) -> dict[str, Any]:
                     context.get("layout_options"),
                     [
                         ("2.5 cm margins, 1.5 spacing (Recommended)", "Use the Skill's standard academic document layout."),
-                        ("Compact margins and single spacing", "Use this only when a strict page limit requires compression."),
+                        ("Compact margins and single spacing", "Best for strict page limits that require compression."),
                         ("User-specified layout", "Use exact margins, spacing, and alignment from the brief or user."),
                     ],
                 ),
@@ -330,7 +330,7 @@ def section_review_payload(context: dict[str, Any]) -> dict[str, Any]:
 def critical_options(title: str, custom: Any) -> list[Option]:
     fallback = [
         ("Integrate in body and Discussion (Recommended)", "Use this evaluative move where the relevant claim is made and return to it in synthesis."),
-        ("Place only at the strongest paragraph", "Use this move at the single paragraph where it most improves causal or evidential precision."),
+        ("Place at strongest paragraph", "Use this move where it most improves causal or evidential precision."),
         ("Replace with a different critique", "Swap this move for a more relevant limitation, comparison, or constructive suggestion."),
     ]
     return option_list(custom, fallback)

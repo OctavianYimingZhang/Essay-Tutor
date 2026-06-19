@@ -185,7 +185,7 @@ When shortening, preserve the reasoning chain and compress lower-value orientati
 
 ## Exemplar And Feedback Use
 
-Use teacher edits and exemplars to extract transferable behaviours:
+Use teacher edits and user-supplied exemplars to extract transferable behaviours:
 
 - how directly the answer is stated;
 - how much context is used before analysis;
