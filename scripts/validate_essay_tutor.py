@@ -171,6 +171,7 @@ def check_intake_question_policy(errors: list[str]) -> None:
             "scripts/build_intake_questions.py brief-details",
             "SectionPlan",
             "paragraph-level plan",
+            "proof logic",
             "real paragraph role",
             "task-specific options",
             "CriticalAnalysisPlan",
@@ -189,6 +190,8 @@ def check_intake_question_policy(errors: list[str]) -> None:
             "margins",
             "line spacing",
             "reference formatting",
+            "submit-ready",
+            "Nature-style journal table",
         ],
         "references/drafting-and-critical-analysis.md": [
             "approved or selected paragraph-level section plans",
@@ -204,6 +207,7 @@ def check_intake_question_policy(errors: list[str]) -> None:
             "context-generated output format",
             "DOCX or LaTeX formatting details",
             "paragraph-level section plan",
+            "proof logic",
             "real paragraph labels",
             "body paragraphs or Discussion",
         ],
@@ -226,6 +230,7 @@ def check_intake_question_policy(errors: list[str]) -> None:
             "chat text, DOCX, LaTeX",
             "real labels such as Abstract",
             "body paragraphs or Discussion",
+            "Nature-style journal tables",
         ],
     }
     for rel, phrases in required_phrases.items():

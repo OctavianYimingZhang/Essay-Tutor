@@ -47,7 +47,7 @@ PlanQA:
   user_preferences_handled:
 ```
 
-A strong plan explains the argument flow, evidence burden, confirmed citation quantity, section rationale, paragraph-level claim path, citation strategy, critical-analysis plan, format requirements, title font size for DOCX output, and revision boundaries in natural language. It should not read like a mechanical field-by-field worksheet. Every Asking Questions batch should follow a displayed plan or decision context.
+A strong plan explains the argument flow, evidence burden, confirmed citation quantity, section rationale, paragraph-level output path, proof logic, citation strategy, critical-analysis placement, format requirements, title font size for DOCX output, and revision boundaries in natural language. It should read as a coherent academic writing plan rather than a mechanical field-by-field worksheet. Every Asking Questions batch should follow a displayed plan or decision context.
 
 Do not show a final integrated plan if any unresolved item could change structure, evidence depth, citation quantity, citation strategy, final language, output form, format requirements, critical-analysis stance, section density, or target standard. Ask another question, request the missing material, present the relevant section plan for revision, or obtain an explicit user selection instead.
 
@@ -121,7 +121,7 @@ ComparisonQA:
   revision_priorities_reflected_in_plan:
 ```
 
-Use this comparison before planning revision. Preserve useful structure, evidence density, and critical stance from the stronger draft while correcting weak formatting, unsupported claims, low-density sections, and generated-result weaknesses. Treat generated results as diagnostic artifacts only.
+Use this comparison before planning revision. Preserve useful structure, evidence density, and critical stance from the stronger draft while correcting weak formatting, unsupported claims, low-density sections, and generated-result weaknesses.
 
 ## Citation QA
 
@@ -163,7 +163,7 @@ Check:
 - user-confirmed or default title font size is applied to the main title;
 - headings, body text, captions, tables, and references are readable and consistent;
 - academic text and headings are black unless the assignment material explicitly requires colour;
-- internal planning metadata, course-stage notes, working labels, and workflow state are kept out of the body;
+- the document body presents submit-ready assignment-facing academic content, with workflow state and planning metadata kept in the conversation or internal planning record;
 - spacing is visually coherent and does not create excessive line gaps;
 - final pages contain meaningful content rather than accidental blanks;
 - page breaks support reading flow;

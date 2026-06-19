@@ -69,7 +69,7 @@ evidence problem -> critical move -> source support -> interpretation -> thesis 
 
 Examples of evidence problems include limited measurement, inconsistent results, weak causal inference, narrow population, dated evidence, untested mechanism, construct ambiguity, and a gap between theory and clinical practice.
 
-Draft critical analysis from the user-selected critical moves in the approved `CriticalAnalysisPlan`. Treat critical analysis as inserted evaluation inside the relevant body paragraphs and Discussion synthesis, not as a separate Discussion-only block. Keep each evaluative move attached to a specific paragraph function, source, method, theory, mechanism, dataset, or interpretation. Do not add a new major criticism during drafting unless it is first reconciled with the confirmed plan or is required by newly verified evidence.
+Draft critical analysis from the user-selected critical moves in the approved `CriticalAnalysisPlan`, or from newly verified evidence that changes the best academic interpretation. Treat critical analysis as inserted evaluation inside the relevant body paragraphs and Discussion synthesis, with each evaluative move attached to a specific paragraph function, source, method, theory, mechanism, dataset, or interpretation.
 
 ## Density And Detail
 

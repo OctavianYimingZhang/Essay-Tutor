@@ -60,7 +60,7 @@ ComparisonDiagnosis:
   revision_priorities:
 ```
 
-Use this diagnosis to decide what to preserve, what to strengthen, and what to avoid in the revised plan. Treat prior generated outputs as diagnostic evidence only: do not reuse them as templates, hidden prompts, or content sources.
+Use this diagnosis to decide what to preserve, what to strengthen, and how the revised plan should improve argument depth, paragraph function, evidence density, critical stance, and formatting.
 
 ## Readiness States
 
@@ -167,7 +167,7 @@ When an assignment gives an upper page or word limit, plan to use the available 
 
 ## Structure Planning
 
-A useful plan explains the argument in natural language rather than mechanically filling labels. It should show the user's confirmed choices, why the section order works, what each section needs to prove, what evidence is required, where critical evaluation belongs, and how the final output will be formatted.
+A useful plan explains the argument in natural language rather than mechanically filling labels. It should show the user's confirmed choices, why the section order works, what each section needs to prove, what each paragraph will output, what conclusion or result will support the claim, where critical evaluation belongs, and how the final output will be formatted.
 
 ```yaml
 StructurePlan:
@@ -195,14 +195,15 @@ StructurePlan:
           how_to_write:
           paragraph_function:
           key_terms_or_concepts:
-          evidence_type_or_material_needed:
+          proof_logic:
+          conclusion_or_result_used_to_support_claim:
           critical_or_comparative_work:
           transition_role:
           user_decision:
       paragraph_level_claim_path:
       key_terms_or_concepts:
-      evidence_to_verify:
-      source_types_or_named_sources:
+      conclusions_to_verify:
+      citation_strategy_for_claims:
       citation_density_target:
       critical_or_comparative_work:
       expected_length_or_density:
@@ -228,8 +229,9 @@ Each `SectionPlan` must include:
 - detailed argument role and reason for its position in the work;
 - paragraph-level plan labelled with the real paragraph role, such as `Abstract`, `Introduction`, `Main Body Paragraph 1: mechanism`, `Discussion Paragraph 1: limitation synthesis`, or `Conclusion`;
 - for each paragraph: what to write, how to write it, paragraph function, transition role, and how it supports the section;
+- proof logic for each paragraph: what conclusion, relationship, mechanism, result, limitation, or comparison will be used to prove the paragraph's claim;
 - key concepts that need definition or explanation;
-- evidence to verify and source types or material categories to seek;
+- conclusions or results to verify before drafting;
 - citation-density target based on the user's selected citation quantity;
 - critical or comparative work for that section;
 - expected length or density based on assignment space and evidence complexity;
@@ -238,11 +240,11 @@ Each `SectionPlan` must include:
 
 For SectionPlan feedback, show the paragraph-level plan first, then call `request_user_input` with one question per paragraph. Ask at most three paragraph questions at a time; if a section has more than three planned paragraphs, ask about the next three named paragraphs first, revise or record those decisions, then ask about the remaining paragraphs in another batch. Each paragraph question must use the real paragraph title and task-specific options that expose actual choices in the displayed plan, such as changing the opening logic, compressing low-value background, shifting evidence emphasis, splitting a dense mechanism paragraph, moving a limitation, or changing the transition.
 
-Do not list named citation targets in a SectionPlan. State the type of evidence or material needed instead, such as primary study evidence, review evidence, rubric wording, lecture material, user data, method detail, or counterargument evidence. Named sources belong in the evidence map and reference planning, not in the user's paragraph-choice prompt.
+In a SectionPlan, describe the paragraph as output logic rather than citation routing. Show what the paragraph will say, how it will develop the point, and what conclusion, mechanism, result, limitation, or comparison will be used to support the paragraph's claim. Detailed source names and reference choices are handled in the evidence map and citation planning, while the user-facing paragraph prompt focuses on the content and argumentative effect.
 
 ## Critical Analysis Plan
 
-After all paragraph-level plans have been discussed, read `references/critical-writing-bank.md` and use it with `references/drafting-and-critical-analysis.md` to create a direct `CriticalAnalysisPlan`. Present specific critical moves and ask the user where and how to include them with `scripts/build_intake_questions.py critical-analysis` or a matching `request_user_input` payload. Do not ask only whether the user approves the whole plan.
+After all paragraph-level plans have been discussed, read `references/critical-writing-bank.md` and use it with `references/drafting-and-critical-analysis.md` to create a direct `CriticalAnalysisPlan`. During the first Discussion section plan, reserve space for synthesis, limitations, evidence boundaries, or methodological appraisal when the essay needs critical analysis. Present specific critical moves and ask the user where and how to include them with `scripts/build_intake_questions.py critical-analysis` or a matching `request_user_input` payload.
 
 The `CriticalAnalysisPlan` must cover:
 

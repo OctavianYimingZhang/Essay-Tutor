@@ -53,10 +53,10 @@ Plan Mode is required for the native Asking Questions flow because `request_user
 
 3. **Structure plan**
    - Create a structure plan only after the assignment brief is locked.
-   - Use `references/intake-and-planning.md` to create detailed section-by-section plans that explain each section's role in the argument, paragraph-level plan, evidence needs by type rather than named citations, citation-density target, critical-analysis work, order, and fit with the user's confirmed goal.
+   - Use `references/intake-and-planning.md` to create detailed section-by-section plans that explain each section's role in the argument, paragraph output path, proof logic, citation-density target, critical-analysis placement, order, and fit with the user's confirmed goal.
    - For essay tasks, plan Abstract, Introduction, Main Body subsections, Discussion, Conclusion, and References when sources are used.
    - Present each section plan as paragraph-level choices using real labels such as `Abstract`, `Introduction`, `Main Body Paragraph 1: ...`, `Discussion Paragraph 1: ...`, and `Conclusion`; use task-specific options that reflect real tradeoffs in the displayed plan.
-   - Present the CriticalAnalysisPlan only after the paragraph plan has been discussed, and frame each critical move as an insertion into body paragraphs or Discussion rather than as a standalone Discussion-only section.
+   - Present the CriticalAnalysisPlan after the paragraph plan has been discussed; when planning Discussion, reserve space for synthesis and critical analysis so later critical moves have a natural insertion point.
    - In Codex Plan Mode, use the required `<proposed_plan>` block for the final plan when active mode requires it; outside Plan Mode, use the same plan structure in normal chat.
    - Draft from the confirmed plan.
 
