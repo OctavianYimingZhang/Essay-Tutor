@@ -1,0 +1,6 @@
+interface:
+  display_name: "Essay Figures Legends"
+  short_description: "Specify figures and submit-ready legends"
+  default_prompt: "Use $essay-tutor-figures-legends to specify my figure and write a source-backed submit-ready legend."
+policy:
+  allow_implicit_invocation: true

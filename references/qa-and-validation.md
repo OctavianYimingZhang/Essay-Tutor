@@ -9,6 +9,9 @@ Check that the plan answers these questions:
 ```yaml
 PlanQA:
   exact_task_understood:
+  task_type_confirmed:
+  submission_mode_confirmed:
+  audience_or_marker_confirmed:
   assignment_brief_built:
   asking_questions_batch_presented:
   plan_mode_used_for_native_question_flow:
@@ -38,18 +41,28 @@ PlanQA:
   critical_moves_have_body_or_discussion_insertion_points:
   essay_structure_present_when_task_is_essay:
   main_body_subsections_named_when_task_is_essay:
+  non_essay_structure_matches_task_type:
+  lab_analysis_tool_confirmed:
+  lab_analysis_method_confirmed:
+  lab_analysis_scope_confirmed:
+  poster_story_plan_present:
+  presentation_storyboard_present:
+  website_interaction_plan_present:
+  figure_generation_spec_present:
+  figure_legend_requirements_confirmed:
   section_rationales_explain_argument_flow:
   section_plans_have_paragraph_level_claim_paths:
   section_density_justified_by_evidence_and_purpose:
   citation_strategy_clear:
   figure_table_data_strategy_clear:
+  task_specific_workflow_clear:
   output_format_clear:
   user_preferences_handled:
 ```
 
-A strong plan explains the argument flow, evidence burden, confirmed citation quantity, section rationale, paragraph-level output path, proof logic, citation strategy, critical-analysis placement, format requirements, title font size for DOCX output, and revision boundaries in natural language. It should read as a coherent academic writing plan rather than a mechanical field-by-field worksheet. Every Asking Questions batch should follow a displayed plan or decision context.
+A strong plan explains the task type, argument or communication flow, evidence burden, confirmed citation quantity, section or panel rationale, paragraph-level output path where relevant, proof logic, citation strategy, critical-analysis placement, task-specific workflow, format requirements, title font size for DOCX output, and revision boundaries in natural language. It should read as a coherent academic work plan rather than a mechanical field-by-field worksheet. Every Asking Questions batch should follow a displayed plan or decision context.
 
-Do not show a final integrated plan if any unresolved item could change structure, evidence depth, citation quantity, citation strategy, final language, output form, format requirements, critical-analysis stance, section density, or target standard. Ask another question, request the missing material, present the relevant section plan for revision, or obtain an explicit user selection instead.
+Do not show a final integrated plan if any unresolved item could change task type, structure, evidence depth, citation quantity, citation strategy, final language, output form, format requirements, critical-analysis stance, section density, analysis tool, analysis method, visual hierarchy, interaction design, figure legend content, or target standard. Ask another question, request the missing material, present the relevant section or task-specific plan for revision, or obtain an explicit user selection instead.
 
 ## Draft QA
 
@@ -58,12 +71,14 @@ Check that the draft has:
 ```yaml
 DraftQA:
   confirmed_plan_reflected:
+  confirmed_task_type_reflected:
   confirmed_citation_quantity_reflected:
   confirmed_format_requirements_reflected:
   selected_paragraph_level_section_plans_reflected:
   selected_critical_moves_reflected:
   essay_structure_followed_when_task_is_essay:
   main_body_subsections_used_when_task_is_essay:
+  non_essay_output_structure_matches_task_type:
   claims_supported_by_sources_or_data:
   evidence_strength_calibrated:
   paragraph_functions_clear:
@@ -74,6 +89,9 @@ DraftQA:
   section_density_matches_value_and_complexity:
   citation_style_consistent:
   results_match_authoritative_analysis:
+  analysis_tool_and_method_match_verified_output:
+  figure_legends_match_verified_details:
+  interaction_or_visual_copy_matches_story_plan:
   conclusion_answers_task:
 ```
 
@@ -90,15 +108,22 @@ Before drafting a new academic writing task, check:
 - `request_user_input` was called with that generated payload before plan-changing requirements were treated as confirmed;
 - the brief is locked before any StructurePlan is shown;
 - every plan-changing requirement is verified from materials or explicitly selected by the user;
+- task type and submission mode are confirmed when the assignment could be an Essay, Lab Report, Poster, Presentation, Interactive Website, Figure Generation, or Figure Legend;
 - citation quantity or density is confirmed by user selection or assignment material, with an approximate count plus density when useful;
 - format requirements are confirmed by generated context-specific options, supplied style guide, or explicit custom user instructions;
 - typography, font size, margins, line spacing, title style, and reference formatting are confirmed for DOCX, Word, LaTeX, or formatted file output;
-- no `inferred_requirements`, `evidence_gaps`, or `open_items` remain if they could change structure, evidence depth, citation quantity, citation strategy, final language, output form, format requirements, critical-analysis stance, section density, or target standard;
-- each paragraph-level SectionPlan has been presented with real paragraph labels and task-specific options, and user feedback has been captured before the final integrated plan;
-- a direct CriticalAnalysisPlan has been presented after paragraph planning as specific critical moves with body-paragraph or Discussion insertion points, and user move-level feedback has been captured before the final integrated plan;
-- the plan includes Abstract, Introduction, Main Body subsections, Discussion, Conclusion, and References where sources are used;
+- lab reports with data analysis have confirmed analysis tool, analysis method, and analysis scope before Results writing;
+- posters have confirmed canvas, message hierarchy, and required visual or data assets before layout planning;
+- presentations have confirmed timing, audience or assessment mode, and speaker notes or script expectation before storyboard planning;
+- interactive websites have confirmed output mode, interaction model, and platform or technology constraints before website planning;
+- figure generation tasks have confirmed figure purpose, source or data basis, and generation or editing tool before figure specification;
+- figure legends have confirmed legend depth, statistical details, and source or permission note before final legend writing;
+- no `inferred_requirements`, `evidence_gaps`, `task_specific_open_items`, or `open_items` remain if they could change task type, structure, evidence depth, citation quantity, citation strategy, final language, output form, format requirements, critical-analysis stance, section density, analysis tool, analysis method, visual hierarchy, interaction design, legend content, or target standard;
+- each paragraph-level SectionPlan has been presented with real paragraph labels and task-specific options when the task has prose sections, and user feedback has been captured before the final integrated plan;
+- a direct CriticalAnalysisPlan has been presented after paragraph planning as specific critical moves with body-paragraph or Discussion insertion points when evaluative writing is needed, and user move-level feedback has been captured before the final integrated plan;
+- the plan includes Abstract, Introduction, Main Body subsections, Discussion, Conclusion, and References only when the task is an essay or the brief requires that structure;
 - the user has confirmed the plan or provided corrections that have been integrated;
-- word limit or expected scope, citation style, citation quantity, final language, output format, format requirements, title font size when needed, source base, critical-analysis stance, and target quality are handled in the plan.
+- word limit or expected scope, citation style, citation quantity, final language, output format, format requirements, title font size when needed, source base, task-specific workflow, critical-analysis stance, and target quality are handled in the plan.
 
 ## Comparison QA
 
@@ -144,14 +169,28 @@ Check:
 VisualDataQA:
   communication_purpose_clear:
   source_or_data_basis_clear:
+  analysis_tool_confirmed_when_relevant:
+  analysis_method_confirmed_when_relevant:
   labels_units_and_abbreviations_clear:
+  figure_legend_requirements_clear:
   caption_explains_reader_takeaway:
   statistics_match_analysis_output:
   permission_or_authorship_recorded:
   text_interprets_the_item:
 ```
 
-Use this check for figures, tables, diagrams, statistical summaries, GraphPad outputs, spreadsheets, and generated visuals.
+Use this check for figures, tables, diagrams, statistical summaries, GraphPad Prism outputs, R Studio outputs, Python outputs, MatLab outputs, spreadsheets, generated visuals, poster panels, presentation visuals, interactive website media, and figure legends.
+
+## Task-Specific QA
+
+Use these checks in addition to the general plan and draft checks:
+
+- Lab report: analysis tool, analysis method, analysis scope, sample basis, exclusions, statistics, figure/table destinations, and result interpretation are verified before Results writing.
+- Poster: title, take-home message, panel hierarchy, visual/data assets, figure legends, readability, citation placement, and submission format match the brief.
+- Presentation: slide timing, slide purpose, transition logic, audience fit, visual placement, citation placement, speaker notes or script, and final output mode match the brief.
+- Interactive website: target user, pages or sections, interaction model, data/media assets, accessibility, navigation, citations, and platform constraints support the academic argument.
+- Figure generation: purpose, claims represented, source or data basis, panel structure, labels, style, tool choice, output format, citation, and permission status are traceable.
+- Figure legend: what is shown, reader takeaway, panel descriptions, sample or data basis, groups or conditions, statistics, error bars, units, scale bars, abbreviations, source, authorship, and permission are included when verified and omitted or queried when not verified.
 
 ## DOCX QA
 

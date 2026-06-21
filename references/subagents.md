@@ -79,8 +79,12 @@ VisualDataCheck:
   item:
   purpose:
   data_or_source_basis:
+  analysis_tool:
+  analysis_method:
   labels_units_statistics:
+  figure_legend_requirements:
   caption_takeaway:
+  source_or_permission_status:
   fit_to_assignment:
 ```
 

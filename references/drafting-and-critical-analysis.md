@@ -7,11 +7,14 @@ Use this reference after the requirement model, evidence map, and structure plan
 Use the structure plan as the drafting contract:
 
 - thesis or central answer;
+- task type, submission mode, and intended audience;
 - scope and audience;
 - section functions;
 - evidence sources;
 - citation strategy and confirmed citation quantity;
 - figure, table, or data role;
+- analysis tool, analysis method, and figure legend requirements when relevant;
+- visual hierarchy, interaction requirements, or storyboard decisions for posters, presentations, and websites;
 - output format and format requirements;
 - approved or selected paragraph-level section plans with real paragraph labels;
 - approved or selected critical-analysis moves and their planned insertion points.
@@ -23,6 +26,8 @@ Before drafting, confirm that the tutoring conversation has resolved:
 - citation quantity and citation style;
 - format requirements, including default format or custom user instructions;
 - critical stance and limits of the argument;
+- lab-report analysis tool, statistical or model method, and analysis scope when results are involved;
+- poster, presentation, website, figure, or figure legend task decisions when those formats are requested;
 - section-by-section plan approval;
 - critical-move-level CriticalAnalysisPlan selection after the paragraph plan has been reviewed;
 - whether user-draft structure, paragraphs, phrasing patterns, or source choices should be preserved, revised, or replaced;
@@ -87,6 +92,25 @@ Effective density usually increases where the rubric rewards analysis, where evi
 When a page or word limit is an upper bound, use remaining space for relevant detail that improves the answer: stronger mechanism explanation, closer source comparison, clearer evidence boundaries, more explicit critical interpretation, and better links back to the question.
 
 ## Section Guidance
+
+## Non-Essay Text Blocks
+
+For posters, presentations, interactive websites, figure generation tasks, and figure legends, draft from the task-specific workflow rather than forcing essay paragraphs into the output.
+
+Use these text-block functions:
+
+```text
+Poster panel -> message -> evidence or visual -> interpretation -> link to takeaway
+Slide -> single purpose -> visual or claim -> spoken explanation -> transition
+Speaker note -> context -> explanation -> evidence boundary -> next slide cue
+Website section -> user question -> interaction or content -> evidence -> next action
+Figure legend -> what is shown -> data/source basis -> details for interpretation -> takeaway
+Results text -> analysis purpose -> verified method -> result -> uncertainty -> meaning
+```
+
+Poster panels should use compact headings, readable text blocks, and captions or legends that carry interpretation without overcrowding the canvas. Slide text should be sparse and visual-led, with evidence and nuance moved into speaker notes or script when requested. Website copy should guide the user through the academic argument and make interactions explain evidence, comparison, or decisions. Figure legends should state what is shown, sample or source basis, groups or conditions, statistics and error bars when verified, units, scale bars, abbreviations, source or permission status, and the reader takeaway.
+
+For lab-report results, write only from verified analysis output or a user-confirmed analysis plan. Keep the analysis tool and method visible in the result plan, and do not name a test, model, post hoc correction, or repeated-measures design unless it is supported by the brief, data analysis output, or the user's answer.
 
 ## Essay Structure
 

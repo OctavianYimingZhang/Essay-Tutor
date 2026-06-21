@@ -119,6 +119,302 @@ def language_options(context: dict[str, Any]) -> list[Option]:
     return option_list(context.get("language_options"), fallback)
 
 
+def task_type_payload(context: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "questions": [
+            question(
+                header="Task Type",
+                question_id="task_type",
+                prompt="Based on the displayed brief reconstruction, what task-specific workflow should be used?",
+                options=option_list(
+                    context.get("task_type_options"),
+                    [
+                        ("Essay or Lab Report (Recommended)", "Use prose-led planning with evidence, citation, method, result, and discussion controls."),
+                        ("Poster or Presentation", "Use visual-story planning for panels, slides, message hierarchy, and speaker or display constraints."),
+                        ("Interactive Website or Figure Generation", "Use output-specific planning for interaction, figure generation, legends, and source-backed visual assets."),
+                    ],
+                ),
+            ),
+        ]
+    }
+
+
+def lab_analysis_payload(context: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "questions": [
+            question(
+                header="Tool",
+                question_id="analysis_tool",
+                prompt="Which software or tool will produce or has produced the analysis output?",
+                options=option_list(
+                    context.get("analysis_tool_options"),
+                    [
+                        ("GraphPad Prism (Recommended)", "Use Prism project files, exported results, or Prism screenshots as the authoritative output."),
+                        ("R Studio, Python, or MatLab", "Use scripts, notebooks, console output, or exported tables as the authoritative output."),
+                        ("Spreadsheet or user-specified tool", "Use Excel, Google Sheets, SPSS, Jamovi, or another tool named by the user."),
+                    ],
+                ),
+            ),
+            question(
+                header="Method",
+                question_id="analysis_method",
+                prompt="What statistical test, model, or descriptive method should the lab report use?",
+                options=option_list(
+                    context.get("analysis_method_options"),
+                    [
+                        ("Use method from brief/output (Recommended)", "Use only the test or model verified from assignment instructions or supplied analysis output."),
+                        ("User-specified method", "Use the exact method the user supplies, such as two-way repeated-measures ANOVA."),
+                        ("Need method selection discussion", "Pause result-writing and discuss valid methods from the study design and data structure."),
+                    ],
+                ),
+            ),
+            question(
+                header="Scope",
+                question_id="analysis_scope",
+                prompt="How should the analysis be used in the report?",
+                options=option_list(
+                    context.get("analysis_scope_options"),
+                    [
+                        ("Report supplied output only (Recommended)", "Interpret the verified analysis without re-running or changing the method."),
+                        ("Check and reproduce analysis", "Review data structure, cleaning, assumptions, and reproducibility before writing results."),
+                        ("Plan analysis before results", "Build an analysis plan first because the output is not yet available or is incomplete."),
+                    ],
+                ),
+            ),
+        ]
+    }
+
+
+def poster_plan_payload(context: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "questions": [
+            question(
+                header="Canvas",
+                question_id="poster_canvas",
+                prompt="What poster canvas, orientation, and submission format should the plan target?",
+                options=option_list(
+                    context.get("poster_canvas_options"),
+                    [
+                        ("Use assignment format (Recommended)", "Follow the size, orientation, and file type stated in the brief or rubric."),
+                        ("Academic A0/A1 poster", "Plan a standard academic poster layout with readable title, panels, and figures."),
+                        ("User-specified canvas", "Use the user's exact dimensions, orientation, software, or submission file type."),
+                    ],
+                ),
+            ),
+            question(
+                header="Message",
+                question_id="poster_message_hierarchy",
+                prompt="What should control the poster's message hierarchy?",
+                options=option_list(
+                    context.get("poster_message_options"),
+                    [
+                        ("Central finding first (Recommended)", "Make title, visual order, and panel emphasis lead to the main take-home message."),
+                        ("Methods and results balanced", "Give more space to study design, methods, figures, and result interpretation."),
+                        ("Audience-led explanation", "Prioritise context and definitions for a less specialised marker or public audience."),
+                    ],
+                ),
+            ),
+            question(
+                header="Assets",
+                question_id="poster_visual_assets",
+                prompt="Which visual or data assets must the poster plan include?",
+                options=option_list(
+                    context.get("poster_visual_options"),
+                    [
+                        ("Use supplied figures/data (Recommended)", "Plan around the figures, tables, diagrams, or outputs already provided."),
+                        ("Create new source-backed visuals", "Generate or design diagrams, summary figures, or tables from verified evidence."),
+                        ("Need asset inventory first", "Pause layout planning until required figures, data, legends, and permissions are identified."),
+                    ],
+                ),
+            ),
+        ]
+    }
+
+
+def presentation_plan_payload(context: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "questions": [
+            question(
+                header="Timing",
+                question_id="presentation_timing",
+                prompt="What duration, slide count, or timing constraint should the storyboard use?",
+                options=option_list(
+                    context.get("presentation_timing_options"),
+                    [
+                        ("Use assignment timing (Recommended)", "Follow the duration, slide count, or time-per-speaker stated in the brief."),
+                        ("Concise assessed talk", "Plan a short, tightly paced academic presentation with few high-value slides."),
+                        ("User-specified timing", "Use the user's exact duration, slide count, and speaking arrangement."),
+                    ],
+                ),
+            ),
+            question(
+                header="Audience",
+                question_id="presentation_audience",
+                prompt="Who is the presentation for, and what assessment mode should it satisfy?",
+                options=option_list(
+                    context.get("presentation_audience_options"),
+                    [
+                        ("Academic marker (Recommended)", "Prioritise rubric fit, evidence, method clarity, and scholarly explanation."),
+                        ("Mixed or public audience", "Use more context, clearer definitions, and less dense slide text."),
+                        ("Panel, seminar, or group role", "Adapt the storyboard to Q&A, seminar discussion, or assigned speaker roles."),
+                    ],
+                ),
+            ),
+            question(
+                header="Notes",
+                question_id="presentation_notes",
+                prompt="What speaking support should be produced with the slides or storyboard?",
+                options=option_list(
+                    context.get("presentation_notes_options"),
+                    [
+                        ("Speaker notes (Recommended)", "Write concise notes that explain each slide without overcrowding the slide text."),
+                        ("Full script", "Prepare a spoken script aligned to timing and slide transitions."),
+                        ("Slide text only", "Plan slide content and visual order without notes or a full script."),
+                    ],
+                ),
+            ),
+        ]
+    }
+
+
+def website_plan_payload(context: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "questions": [
+            question(
+                header="Output",
+                question_id="website_output_mode",
+                prompt="What website output mode should the academic plan target?",
+                options=option_list(
+                    context.get("website_output_options"),
+                    [
+                        ("Interactive website (Recommended)", "Plan content, navigation, interactions, citations, and accessible user flow."),
+                        ("Static website", "Plan linked pages or sections with academic copy and visuals but minimal interaction."),
+                        ("Prototype/spec only", "Produce a storyboard, wireframe text, or implementation brief rather than building files."),
+                    ],
+                ),
+            ),
+            question(
+                header="Journey",
+                question_id="website_interaction_model",
+                prompt="What user journey or interaction type should carry the academic argument?",
+                options=option_list(
+                    context.get("website_interaction_options"),
+                    [
+                        ("Guided narrative (Recommended)", "Use scrolling, sections, or step-by-step navigation to teach the topic."),
+                        ("Explore data or figures", "Use filters, charts, reveal states, or comparisons around supplied data and visuals."),
+                        ("Decision or quiz interaction", "Use prompts, checkpoints, or branching to test understanding or choices."),
+                    ],
+                ),
+            ),
+            question(
+                header="Platform",
+                question_id="website_platform_constraints",
+                prompt="What platform, technology, or submission constraints must the website follow?",
+                options=option_list(
+                    context.get("website_platform_options"),
+                    [
+                        ("Use assignment constraints (Recommended)", "Follow the platform, file type, accessibility, and hosting rules in the brief."),
+                        ("Simple HTML/CSS/JS", "Plan a local static implementation that can run without a backend."),
+                        ("User-specified stack", "Use the user's required tool, CMS, framework, or institutional platform."),
+                    ],
+                ),
+            ),
+        ]
+    }
+
+
+def figure_plan_payload(context: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "questions": [
+            question(
+                header="Purpose",
+                question_id="figure_purpose",
+                prompt="What should the figure do for the assignment?",
+                options=option_list(
+                    context.get("figure_purpose_options"),
+                    [
+                        ("Explain a mechanism (Recommended)", "Use a source-backed schematic to show a pathway, process, model, or relationship."),
+                        ("Present data/results", "Use a data figure that preserves labels, units, sample sizes, uncertainty, and statistics."),
+                        ("Summarise or compare evidence", "Use a conceptual, comparison, workflow, or limitation figure."),
+                    ],
+                ),
+            ),
+            question(
+                header="Basis",
+                question_id="figure_source_basis",
+                prompt="What source or data basis should constrain the figure content?",
+                options=option_list(
+                    context.get("figure_source_options"),
+                    [
+                        ("User data or supplied sources (Recommended)", "Use only supplied data, assignment material, and verified sources."),
+                        ("Peer-reviewed source-backed schematic", "Create an original figure from verified literature and cite those sources."),
+                        ("Existing figure with permission check", "Use or adapt a supplied or published figure only after authorship and permission are clear."),
+                    ],
+                ),
+            ),
+            question(
+                header="Tool",
+                question_id="figure_generation_tool",
+                prompt="What tool or workflow should be used to make or edit the figure?",
+                options=option_list(
+                    context.get("figure_tool_options"),
+                    [
+                        ("BioRender or diagram tool (Recommended)", "Use a structured scientific-figure workflow with editable labels and panels."),
+                        ("Image generation or editing", "Use generated or edited imagery while keeping scientific claims source-backed."),
+                        ("User-specified tool", "Use the user's required software, style guide, file format, or template."),
+                    ],
+                ),
+            ),
+        ]
+    }
+
+
+def figure_legend_payload(context: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "questions": [
+            question(
+                header="Depth",
+                question_id="legend_depth",
+                prompt="How detailed should the figure legend be?",
+                options=option_list(
+                    context.get("legend_depth_options"),
+                    [
+                        ("Complete submit-ready legend (Recommended)", "State what is shown, the reader takeaway, and all details needed for interpretation."),
+                        ("Concise caption", "Use a shorter legend suitable for a poster, slide, or word-limited figure."),
+                        ("Journal-style full legend", "Include panel-by-panel descriptions, methods, statistics, and abbreviations."),
+                    ],
+                ),
+            ),
+            question(
+                header="Stats",
+                question_id="legend_statistics",
+                prompt="What statistical or technical details must the legend include?",
+                options=option_list(
+                    context.get("legend_statistics_options"),
+                    [
+                        ("Use verified analysis output (Recommended)", "Report sample sizes, tests, p values, error bars, units, and scale bars only when supplied or verified."),
+                        ("Methods-light legend", "Include groups, conditions, units, and abbreviations but keep statistical detail in the Results text."),
+                        ("Need details from user", "Pause legend writing until sample basis, statistics, labels, or abbreviations are supplied."),
+                    ],
+                ),
+            ),
+            question(
+                header="Source",
+                question_id="legend_source_note",
+                prompt="What source, authorship, or permission note should accompany the legend?",
+                options=option_list(
+                    context.get("legend_source_options"),
+                    [
+                        ("Use supplied source note (Recommended)", "Include the citation, data basis, authorship, or permission statement from the brief or user."),
+                        ("Original figure from verified sources", "Cite the sources behind the content rather than claiming direct reuse."),
+                        ("Permission unclear", "Mark reuse or authorship as unresolved before finalising the figure legend."),
+                    ],
+                ),
+            ),
+        ]
+    }
+
+
 def sparse_payload(context: dict[str, Any]) -> dict[str, Any]:
     return {
         "questions": [
@@ -385,6 +681,13 @@ def main() -> int:
             "brief-details",
             "docx-format",
             "document-format",
+            "task-type",
+            "lab-analysis",
+            "poster-plan",
+            "presentation-plan",
+            "website-plan",
+            "figure-plan",
+            "figure-legend",
             "section-review",
             "critical-analysis",
         ),
@@ -403,6 +706,20 @@ def main() -> int:
         payload = brief_details_payload(context)
     elif args.scenario in {"docx-format", "document-format"}:
         payload = document_format_payload(context)
+    elif args.scenario == "task-type":
+        payload = task_type_payload(context)
+    elif args.scenario == "lab-analysis":
+        payload = lab_analysis_payload(context)
+    elif args.scenario == "poster-plan":
+        payload = poster_plan_payload(context)
+    elif args.scenario == "presentation-plan":
+        payload = presentation_plan_payload(context)
+    elif args.scenario == "website-plan":
+        payload = website_plan_payload(context)
+    elif args.scenario == "figure-plan":
+        payload = figure_plan_payload(context)
+    elif args.scenario == "figure-legend":
+        payload = figure_legend_payload(context)
     elif args.scenario == "section-review":
         payload = section_review_payload(context)
     else:

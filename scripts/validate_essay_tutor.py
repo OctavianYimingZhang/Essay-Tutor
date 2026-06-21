@@ -13,6 +13,19 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
+FOCUSED_SKILLS = [
+    "essay-tutor-intake-planning",
+    "essay-tutor-research-citation",
+    "essay-tutor-draft-revise",
+    "essay-tutor-critical-analysis",
+    "essay-tutor-lab-data",
+    "essay-tutor-figures-legends",
+    "essay-tutor-posters-presentations",
+    "essay-tutor-website-coursework",
+    "essay-tutor-docx-formatting",
+    "essay-tutor-final-qa",
+]
+
 REQUIRED_FILES = [
     "SKILL.md",
     "README.md",
@@ -28,8 +41,15 @@ REQUIRED_FILES = [
     "references/subagents.md",
     "references/qa-and-validation.md",
     "scripts/skill_maintenance.py",
+    "scripts/install_multiple_skills.py",
     "scripts/build_intake_questions.py",
     "scripts/validate_essay_tutor.py",
+] + [
+    f"skills/{skill}/SKILL.md"
+    for skill in FOCUSED_SKILLS
+] + [
+    f"skills/{skill}/agents/openai.yaml"
+    for skill in FOCUSED_SKILLS
 ]
 
 CJK_RE = re.compile(r"[\u3400-\u9fff\uf900-\ufaff]")
@@ -99,6 +119,46 @@ def check_readme_and_license(errors: list[str]) -> None:
         errors.append("LICENSE must include the copyright holder.")
 
 
+def check_multiple_skill_system(errors: list[str]) -> None:
+    root_skill = (ROOT / "SKILL.md").read_text(encoding="utf-8") if (ROOT / "SKILL.md").exists() else ""
+    readme = (ROOT / "README.md").read_text(encoding="utf-8") if (ROOT / "README.md").exists() else ""
+    manifest = json.loads((ROOT / "skill_manifest.json").read_text(encoding="utf-8")) if (ROOT / "skill_manifest.json").exists() else {}
+    manifest_skills = set(manifest.get("focused_skills", []))
+    if "Multiple Skill System" not in root_skill:
+        errors.append("SKILL.md must describe the Multiple Skill System router.")
+    if "scripts/install_multiple_skills.py" not in readme or "scripts/install_multiple_skills.py" not in root_skill:
+        errors.append("README.md and SKILL.md must document focused-skill installation.")
+    for skill in FOCUSED_SKILLS:
+        if skill not in root_skill:
+            errors.append(f"SKILL.md route map must include {skill}.")
+        if skill not in readme:
+            errors.append(f"README.md focused skill table must include {skill}.")
+        if skill not in manifest_skills:
+            errors.append(f"skill_manifest.json focused_skills must include {skill}.")
+        skill_dir = ROOT / "skills" / skill
+        skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8") if (skill_dir / "SKILL.md").exists() else ""
+        metadata = (skill_dir / "agents/openai.yaml").read_text(encoding="utf-8") if (skill_dir / "agents/openai.yaml").exists() else ""
+        if not skill_text.startswith("---\n"):
+            errors.append(f"{skill} SKILL.md must start with YAML frontmatter.")
+            continue
+        try:
+            _, frontmatter, _ = skill_text.split("---", 2)
+        except ValueError:
+            errors.append(f"{skill} SKILL.md frontmatter is not closed.")
+            continue
+        if f"name: {skill}" not in frontmatter:
+            errors.append(f"{skill} frontmatter must contain name: {skill}.")
+        if "description:" not in frontmatter:
+            errors.append(f"{skill} frontmatter must contain description.")
+        for phrase in ("packaged path", "local copied-skill path", "default local path"):
+            if phrase not in skill_text:
+                errors.append(f"{skill} must describe shared resource path fallback: {phrase}.")
+        if f"Use ${skill}" not in metadata:
+            errors.append(f"{skill} agents/openai.yaml default_prompt must mention ${skill}.")
+        if "allow_implicit_invocation: true" not in metadata:
+            errors.append(f"{skill} agents/openai.yaml must allow implicit invocation.")
+
+
 def validate_question_payload(payload: object, scenario: str, errors: list[str]) -> None:
     if not isinstance(payload, dict):
         errors.append(f"{scenario} intake payload must be a JSON object.")
@@ -143,6 +203,7 @@ def check_intake_question_policy(errors: list[str]) -> None:
         "references/intake-and-planning.md": ROOT / "references/intake-and-planning.md",
         "references/drafting-and-critical-analysis.md": ROOT / "references/drafting-and-critical-analysis.md",
         "references/critical-writing-bank.md": ROOT / "references/critical-writing-bank.md",
+        "references/visuals-tables-data.md": ROOT / "references/visuals-tables-data.md",
         "references/docx-output.md": ROOT / "references/docx-output.md",
         "references/qa-and-validation.md": ROOT / "references/qa-and-validation.md",
     }
@@ -151,24 +212,50 @@ def check_intake_question_policy(errors: list[str]) -> None:
     required_phrases = {
         "SKILL.md": [
             "python3 scripts/build_intake_questions.py sparse",
+            "python3 scripts/build_intake_questions.py task-type",
             "call `request_user_input` with the emitted JSON object",
             "Before every Asking Questions call",
             "citation quantity",
             "format requirements",
+            "analysis tool and method",
+            "figure legend requirements",
             "title font size for DOCX output",
+            "task-specific workflows",
             "paragraph-level choices",
             "CriticalAnalysisPlan",
         ],
         "references/intake-and-planning.md": [
+            "submission_mode",
+            "audience_or_marker",
+            "visual_requirements",
+            "interaction_requirements",
+            "analysis_tool",
+            "analysis_method",
+            "figure_legend_requirements",
+            "task_specific_open_items",
+            "scripts/build_intake_questions.py task-type",
             "scripts/build_intake_questions.py sparse",
             "call `request_user_input` with the emitted JSON object",
             "citation quantity or density",
             "format requirements",
+            "scripts/build_intake_questions.py lab-analysis",
+            "scripts/build_intake_questions.py poster-plan",
+            "scripts/build_intake_questions.py presentation-plan",
+            "scripts/build_intake_questions.py website-plan",
+            "scripts/build_intake_questions.py figure-plan",
+            "scripts/build_intake_questions.py figure-legend",
             "scripts/build_intake_questions.py docx-format",
             "scripts/build_intake_questions.py document-format",
             "title_font_size",
             "free-form answer",
             "scripts/build_intake_questions.py brief-details",
+            "Task-Specific Workflows",
+            "Lab Report Workflow",
+            "Poster Workflow",
+            "Presentation Workflow",
+            "Interactive Website Workflow",
+            "Figure Generation Workflow",
+            "Figure Legend Workflow",
             "SectionPlan",
             "paragraph-level plan",
             "proof logic",
@@ -199,12 +286,39 @@ def check_intake_question_policy(errors: list[str]) -> None:
             "insertion points",
             "confirmed citation quantity",
             "format requirements",
+            "Non-Essay Text Blocks",
+            "Poster panel",
+            "Speaker note",
+            "Website section",
+            "Figure legend",
+            "Results text",
+            "analysis tool and method",
+        ],
+        "references/visuals-tables-data.md": [
+            "GraphPad Prism",
+            "R Studio",
+            "Python",
+            "MatLab",
+            "scripts/build_intake_questions.py lab-analysis",
+            "scripts/build_intake_questions.py figure-plan",
+            "scripts/build_intake_questions.py figure-legend",
+            "FigureGenerationSpec",
+            "FigureLegendSpec",
+            "Do not infer the statistical test or model",
+            "two-way repeated-measures ANOVA",
         ],
         "agents/openai.yaml": [
             "display the relevant brief or decision plan before every Asking Questions batch",
             "generate dynamic request_user_input payloads with scripts/build_intake_questions.py",
+            "task type",
             "citation count plus density",
             "context-generated output format",
+            "lab-report analysis tool and method",
+            "poster canvas and message hierarchy",
+            "presentation timing and notes",
+            "website interaction model and platform constraints",
+            "figure purpose and source basis",
+            "figure legend depth and source or permission note",
             "DOCX or LaTeX formatting details",
             "paragraph-level section plan",
             "proof logic",
@@ -223,10 +337,29 @@ def check_intake_question_policy(errors: list[str]) -> None:
             "critical_analysis_plan_presented",
             "critical_move_selection_captured",
             "critical_moves_have_body_or_discussion_insertion_points",
+            "task_type_confirmed",
+            "non_essay_structure_matches_task_type",
+            "lab_analysis_tool_confirmed",
+            "lab_analysis_method_confirmed",
+            "poster_story_plan_present",
+            "presentation_storyboard_present",
+            "website_interaction_plan_present",
+            "figure_generation_spec_present",
+            "figure_legend_requirements_confirmed",
+            "Task-Specific QA",
         ],
         "README.md": [
+            "posters, presentations, interactive websites, figure generation tasks, figure legends",
             "displays the relevant brief, paragraph, format, or critical-analysis plan",
+            "task type",
             "citation quantity as an approximate count plus density",
+            "analysis tool",
+            "statistical or model method",
+            "poster users",
+            "presentation users",
+            "website users",
+            "figure-generation users",
+            "figure-legend users",
             "chat text, DOCX, LaTeX",
             "real labels such as Abstract",
             "body paragraphs or Discussion",
@@ -242,7 +375,23 @@ def check_intake_question_policy(errors: list[str]) -> None:
 
     script = ROOT / "scripts/build_intake_questions.py"
     payloads: dict[str, object] = {}
-    for scenario in ("sparse", "complete", "brief-details", "docx-format", "document-format", "section-review", "critical-analysis"):
+    scenarios = (
+        "sparse",
+        "complete",
+        "brief-details",
+        "docx-format",
+        "document-format",
+        "task-type",
+        "lab-analysis",
+        "poster-plan",
+        "presentation-plan",
+        "website-plan",
+        "figure-plan",
+        "figure-legend",
+        "section-review",
+        "critical-analysis",
+    )
+    for scenario in scenarios:
         try:
             completed = subprocess.run(
                 [sys.executable, str(script), scenario],
@@ -281,18 +430,44 @@ def check_intake_question_policy(errors: list[str]) -> None:
                 errors.append(f"{scenario} payload must not use the old generic default format option.")
 
     scenario_required_ids = {
-        "brief-details": "source_base",
-        "docx-format": "title_font_size",
-        "document-format": "document_typography",
+        "brief-details": ("final_language", "citation_style", "source_base"),
+        "docx-format": ("document_typography", "document_layout", "title_font_size"),
+        "document-format": ("document_typography", "document_layout", "title_font_size"),
+        "task-type": ("task_type",),
+        "lab-analysis": ("analysis_tool", "analysis_method", "analysis_scope"),
+        "poster-plan": ("poster_canvas", "poster_message_hierarchy", "poster_visual_assets"),
+        "presentation-plan": ("presentation_timing", "presentation_audience", "presentation_notes"),
+        "website-plan": ("website_output_mode", "website_interaction_model", "website_platform_constraints"),
+        "figure-plan": ("figure_purpose", "figure_source_basis", "figure_generation_tool"),
+        "figure-legend": ("legend_depth", "legend_statistics", "legend_source_note"),
     }
-    for scenario, question_id in scenario_required_ids.items():
+    for scenario, question_ids in scenario_required_ids.items():
         payload = payloads.get(scenario)
         if not isinstance(payload, dict):
             continue
         questions = payload.get("questions", [])
-        question_ids = {item.get("id") for item in questions if isinstance(item, dict)}
-        if question_id not in question_ids:
-            errors.append(f"{scenario} payload must include {question_id}.")
+        actual_ids = {item.get("id") for item in questions if isinstance(item, dict)}
+        for question_id in question_ids:
+            if question_id not in actual_ids:
+                errors.append(f"{scenario} payload must include {question_id}.")
+
+    required_label_fragments = {
+        "task-type": ("Essay", "Lab Report", "Poster", "Presentation", "Interactive Website", "Figure Generation"),
+        "lab-analysis": ("GraphPad Prism", "R Studio", "Python", "MatLab", "two-way repeated-measures ANOVA"),
+        "poster-plan": ("canvas", "message", "visual"),
+        "presentation-plan": ("timing", "audience", "Speaker notes"),
+        "website-plan": ("Interactive website", "Guided narrative", "HTML/CSS/JS"),
+        "figure-plan": ("Explain a mechanism", "User data or supplied sources", "BioRender"),
+        "figure-legend": ("Complete submit-ready legend", "sample sizes", "permission"),
+    }
+    for scenario, fragments in required_label_fragments.items():
+        payload = payloads.get(scenario)
+        if not isinstance(payload, dict):
+            continue
+        text = json.dumps(payload)
+        for fragment in fragments:
+            if fragment not in text:
+                errors.append(f"{scenario} payload must include task-specific fragment {fragment}.")
 
     generic_section_labels = {
         "Include as planned (Recommended)",
@@ -392,6 +567,7 @@ def main() -> int:
         check_skill_frontmatter(errors)
     check_english_only(errors, args.strict)
     check_readme_and_license(errors)
+    check_multiple_skill_system(errors)
     check_intake_question_policy(errors)
 
     if errors:

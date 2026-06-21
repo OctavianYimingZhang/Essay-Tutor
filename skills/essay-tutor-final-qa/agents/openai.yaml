@@ -1,0 +1,6 @@
+interface:
+  display_name: "Essay Final QA"
+  short_description: "Check academic work before delivery"
+  default_prompt: "Use $essay-tutor-final-qa to audit my coursework against the brief, citations, structure, visuals, and formatting."
+policy:
+  allow_implicit_invocation: true

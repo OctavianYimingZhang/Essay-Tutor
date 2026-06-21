@@ -4,6 +4,19 @@
   "repo": "OctavianYimingZhang/Essay-Tutor",
   "branch": "main",
   "entrypoint": "SKILL.md",
+  "focused_skills": [
+    "essay-tutor-intake-planning",
+    "essay-tutor-research-citation",
+    "essay-tutor-draft-revise",
+    "essay-tutor-critical-analysis",
+    "essay-tutor-lab-data",
+    "essay-tutor-figures-legends",
+    "essay-tutor-posters-presentations",
+    "essay-tutor-website-coursework",
+    "essay-tutor-docx-formatting",
+    "essay-tutor-final-qa"
+  ],
+  "focused_skill_install_command": "python3 scripts/install_multiple_skills.py",
   "license": "MIT",
   "health_commands": [
     "python3 -m compileall -q scripts",
