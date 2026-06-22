@@ -1,0 +1,6 @@
+interface:
+  display_name: "Essay Website Coursework"
+  short_description: "Plan interactive academic websites"
+  default_prompt: "Use $coursework-killer-website-coursework to plan an assessed interactive academic website and its evidence-backed user journey."
+policy:
+  allow_implicit_invocation: true

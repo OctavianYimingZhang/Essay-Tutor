@@ -1,0 +1,659 @@
+#!/usr/bin/env python3
+"""Validate the coursework-killer skill package."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import pathlib
+import re
+import subprocess
+import sys
+
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+
+FOCUSED_SKILLS = [
+    "coursework-killer-intake-planning",
+    "coursework-killer-research-citation",
+    "coursework-killer-draft-revise",
+    "coursework-killer-critical-analysis",
+    "coursework-killer-lab-data",
+    "coursework-killer-figures-legends",
+    "coursework-killer-posters-presentations",
+    "coursework-killer-website-coursework",
+    "coursework-killer-docx-formatting",
+    "coursework-killer-final-qa",
+]
+
+REQUIRED_FILES = [
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "agents/openai.yaml",
+    "skill_manifest.json",
+    "references/intake-and-planning.md",
+    "references/research-and-citation.md",
+    "references/drafting-and-critical-analysis.md",
+    "references/critical-writing-bank.md",
+    "references/visuals-tables-data.md",
+    "references/docx-output.md",
+    "references/subagents.md",
+    "references/qa-and-validation.md",
+    "scripts/skill_maintenance.py",
+    "scripts/install_multiple_skills.py",
+    "scripts/build_intake_questions.py",
+    "scripts/validate_coursework_killer.py",
+] + [
+    f"skills/{skill}/SKILL.md"
+    for skill in FOCUSED_SKILLS
+] + [
+    f"skills/{skill}/agents/openai.yaml"
+    for skill in FOCUSED_SKILLS
+]
+
+CJK_RE = re.compile(r"[\u3400-\u9fff\uf900-\ufaff]")
+PLACEHOLDER_WORD = "".join(chr(code) for code in (84, 79, 68, 79))
+PLACEHOLDER_MARKERS = ("[" + PLACEHOLDER_WORD, PLACEHOLDER_WORD + ":")
+
+
+def iter_text_files() -> list[pathlib.Path]:
+    paths: list[pathlib.Path] = []
+    for path in ROOT.rglob("*"):
+        if not path.is_file():
+            continue
+        if ".git" in path.parts:
+            continue
+        if path.suffix.lower() in {".md", ".yaml", ".yml", ".json", ".py", ".txt"} or path.name in {
+            "LICENSE",
+            "README.md",
+            "SKILL.md",
+        }:
+            paths.append(path)
+    return sorted(paths)
+
+
+def check_required_files(errors: list[str]) -> None:
+    for rel in REQUIRED_FILES:
+        if not (ROOT / rel).is_file():
+            errors.append(f"Missing required file: {rel}")
+
+
+def check_skill_frontmatter(errors: list[str]) -> None:
+    path = ROOT / "SKILL.md"
+    text = path.read_text(encoding="utf-8")
+    if not text.startswith("---\n"):
+        errors.append("SKILL.md must start with YAML frontmatter.")
+        return
+    try:
+        _, frontmatter, _ = text.split("---", 2)
+    except ValueError:
+        errors.append("SKILL.md frontmatter is not closed.")
+        return
+    if "name: coursework-killer" not in frontmatter:
+        errors.append("SKILL.md frontmatter must contain name: coursework-killer.")
+    if "description:" not in frontmatter:
+        errors.append("SKILL.md frontmatter must contain description.")
+    if any(marker in frontmatter for marker in PLACEHOLDER_MARKERS):
+        errors.append("SKILL.md frontmatter still contains template placeholder text.")
+
+
+def check_english_only(errors: list[str], strict: bool) -> None:
+    for path in iter_text_files():
+        rel = path.relative_to(ROOT)
+        text = path.read_text(encoding="utf-8")
+        if CJK_RE.search(text):
+            errors.append(f"Non-English CJK character detected in {rel}")
+        if strict and any(marker in text for marker in PLACEHOLDER_MARKERS):
+            errors.append(f"template placeholder detected in {rel}")
+
+
+def check_readme_and_license(errors: list[str]) -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8") if (ROOT / "README.md").exists() else ""
+    license_text = (ROOT / "LICENSE").read_text(encoding="utf-8") if (ROOT / "LICENSE").exists() else ""
+    if "CourseWork Killer" not in readme:
+        errors.append("README.md must describe CourseWork Killer.")
+    if "MIT License" not in license_text:
+        errors.append("LICENSE must be MIT License text.")
+    if "Octavian Yiming Zhang" not in license_text:
+        errors.append("LICENSE must include the copyright holder.")
+
+
+def check_multiple_skill_system(errors: list[str]) -> None:
+    root_skill = (ROOT / "SKILL.md").read_text(encoding="utf-8") if (ROOT / "SKILL.md").exists() else ""
+    readme = (ROOT / "README.md").read_text(encoding="utf-8") if (ROOT / "README.md").exists() else ""
+    manifest = json.loads((ROOT / "skill_manifest.json").read_text(encoding="utf-8")) if (ROOT / "skill_manifest.json").exists() else {}
+    manifest_skills = set(manifest.get("focused_skills", []))
+    if "Multiple Skill System" not in root_skill:
+        errors.append("SKILL.md must describe the Multiple Skill System router.")
+    if "scripts/install_multiple_skills.py" not in readme or "scripts/install_multiple_skills.py" not in root_skill:
+        errors.append("README.md and SKILL.md must document focused-skill installation.")
+    for skill in FOCUSED_SKILLS:
+        if skill not in root_skill:
+            errors.append(f"SKILL.md route map must include {skill}.")
+        if skill not in readme:
+            errors.append(f"README.md focused skill table must include {skill}.")
+        if skill not in manifest_skills:
+            errors.append(f"skill_manifest.json focused_skills must include {skill}.")
+        skill_dir = ROOT / "skills" / skill
+        skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8") if (skill_dir / "SKILL.md").exists() else ""
+        metadata = (skill_dir / "agents/openai.yaml").read_text(encoding="utf-8") if (skill_dir / "agents/openai.yaml").exists() else ""
+        if not skill_text.startswith("---\n"):
+            errors.append(f"{skill} SKILL.md must start with YAML frontmatter.")
+            continue
+        try:
+            _, frontmatter, _ = skill_text.split("---", 2)
+        except ValueError:
+            errors.append(f"{skill} SKILL.md frontmatter is not closed.")
+            continue
+        if f"name: {skill}" not in frontmatter:
+            errors.append(f"{skill} frontmatter must contain name: {skill}.")
+        if "description:" not in frontmatter:
+            errors.append(f"{skill} frontmatter must contain description.")
+        for phrase in ("packaged path", "local copied-skill path", "default local path"):
+            if phrase not in skill_text:
+                errors.append(f"{skill} must describe shared resource path fallback: {phrase}.")
+        if f"Use ${skill}" not in metadata:
+            errors.append(f"{skill} agents/openai.yaml default_prompt must mention ${skill}.")
+        if "allow_implicit_invocation: true" not in metadata:
+            errors.append(f"{skill} agents/openai.yaml must allow implicit invocation.")
+
+
+def validate_question_payload(payload: object, scenario: str, errors: list[str]) -> None:
+    if not isinstance(payload, dict):
+        errors.append(f"{scenario} intake payload must be a JSON object.")
+        return
+    questions = payload.get("questions")
+    if not isinstance(questions, list) or not 1 <= len(questions) <= 3:
+        errors.append(f"{scenario} intake payload must contain 1-3 questions.")
+        return
+    for index, item in enumerate(questions, start=1):
+        if not isinstance(item, dict):
+            errors.append(f"{scenario} question {index} must be an object.")
+            continue
+        for key in ("header", "id", "question", "options"):
+            if key not in item:
+                errors.append(f"{scenario} question {index} missing {key}.")
+        if not isinstance(item.get("header"), str) or len(item.get("header", "")) > 12:
+            errors.append(f"{scenario} question {index} header must be a short string.")
+        if not isinstance(item.get("id"), str) or not re.fullmatch(r"[a-z][a-z0-9_]*", item.get("id", "")):
+            errors.append(f"{scenario} question {index} id must be snake_case.")
+        if not isinstance(item.get("question"), str) or not item.get("question", "").strip():
+            errors.append(f"{scenario} question {index} must include question text.")
+        options = item.get("options")
+        if not isinstance(options, list) or not 2 <= len(options) <= 3:
+            errors.append(f"{scenario} question {index} must include 2-3 options.")
+            continue
+        for option_index, option in enumerate(options, start=1):
+            if not isinstance(option, dict):
+                errors.append(f"{scenario} question {index} option {option_index} must be an object.")
+                continue
+            if not isinstance(option.get("label"), str) or not option.get("label", "").strip():
+                errors.append(f"{scenario} question {index} option {option_index} missing label.")
+            if not isinstance(option.get("description"), str) or not option.get("description", "").strip():
+                errors.append(f"{scenario} question {index} option {option_index} missing description.")
+
+
+def check_intake_question_policy(errors: list[str]) -> None:
+    """Validate the code-backed request_user_input payload workflow."""
+    files = {
+        "SKILL.md": ROOT / "SKILL.md",
+        "README.md": ROOT / "README.md",
+        "agents/openai.yaml": ROOT / "agents/openai.yaml",
+        "references/intake-and-planning.md": ROOT / "references/intake-and-planning.md",
+        "references/drafting-and-critical-analysis.md": ROOT / "references/drafting-and-critical-analysis.md",
+        "references/critical-writing-bank.md": ROOT / "references/critical-writing-bank.md",
+        "references/visuals-tables-data.md": ROOT / "references/visuals-tables-data.md",
+        "references/docx-output.md": ROOT / "references/docx-output.md",
+        "references/subagents.md": ROOT / "references/subagents.md",
+        "references/qa-and-validation.md": ROOT / "references/qa-and-validation.md",
+    }
+    text_by_rel = {rel: path.read_text(encoding="utf-8") for rel, path in files.items() if path.exists()}
+
+    required_phrases = {
+        "SKILL.md": [
+            "python3 scripts/build_intake_questions.py sparse",
+            "python3 scripts/build_intake_questions.py task-type",
+            "call `request_user_input` with the emitted JSON object",
+            "Before every Asking Questions call",
+            "citation quantity",
+            "format requirements",
+            "analysis tool and method",
+            "figure legend requirements",
+            "title font size for DOCX output",
+            "task-specific workflows",
+            "paragraph-level choices",
+            "CriticalAnalysisPlan",
+        ],
+        "references/intake-and-planning.md": [
+            "submission_mode",
+            "audience_or_marker",
+            "visual_requirements",
+            "interaction_requirements",
+            "analysis_tool",
+            "analysis_method",
+            "figure_legend_requirements",
+            "task_specific_open_items",
+            "scripts/build_intake_questions.py task-type",
+            "scripts/build_intake_questions.py sparse",
+            "call `request_user_input` with the emitted JSON object",
+            "citation quantity or density",
+            "format requirements",
+            "scripts/build_intake_questions.py lab-analysis",
+            "scripts/build_intake_questions.py poster-plan",
+            "scripts/build_intake_questions.py presentation-plan",
+            "scripts/build_intake_questions.py website-plan",
+            "scripts/build_intake_questions.py figure-plan",
+            "scripts/build_intake_questions.py figure-legend",
+            "scripts/build_intake_questions.py docx-format",
+            "scripts/build_intake_questions.py document-format",
+            "title_font_size",
+            "free-form answer",
+            "scripts/build_intake_questions.py brief-details",
+            "Task-Specific Workflows",
+            "Lab Report Workflow",
+            "Poster Workflow",
+            "Presentation Workflow",
+            "Interactive Website Workflow",
+            "Figure Generation Workflow",
+            "Figure Legend Workflow",
+            "SectionPlan",
+            "paragraph-level plan",
+            "proof logic",
+            "real paragraph role",
+            "task-specific options",
+            "CriticalAnalysisPlan",
+            "critical moves",
+            "body paragraphs or Discussion",
+            "critical-writing-bank.md",
+            "scripts/build_intake_questions.py section-review",
+            "scripts/build_intake_questions.py critical-analysis",
+            "Requirement/rubric/brief gate",
+            "Subagents may run only after the brief is locked",
+            "interactive tasks remain with the main agent",
+            "scripts/build_intake_questions.py planning-approval",
+            "scripts/build_intake_questions.py writing-gate",
+            "proceeds directly into writing",
+        ],
+        "references/subagents.md": [
+            "Requirement/rubric/brief gate",
+            "interactive tasks remain with the main agent",
+            "Subagents may run only after the brief is locked",
+            "EvidenceRetrievalAgent",
+            "EvidenceAppraisalAgent",
+            "DataAnalysisAgent",
+            "IntroductionDraftAgent",
+            "MethodDraftAgent",
+            "ResultsDraftAgent",
+            "DiscussionDraftAgent",
+            "CitationIntegrityAgent",
+            "VisualDataAgent",
+            "FinalQAAgent",
+            "DataAnalysisAgent may run in parallel with IntroductionDraftAgent and MethodDraftAgent",
+            "ResultsDraftAgent and DiscussionDraftAgent must wait for DataAnalysisAgent output",
+            "plan-breaking issue",
+        ],
+        "references/docx-output.md": [
+            "title_font_size",
+            "14 pt main title",
+            "scripts/build_intake_questions.py docx-format",
+            "scripts/build_intake_questions.py document-format",
+            "typography",
+            "margins",
+            "line spacing",
+            "reference formatting",
+            "submit-ready",
+            "Nature-style journal table",
+        ],
+        "references/drafting-and-critical-analysis.md": [
+            "approved or selected paragraph-level section plans",
+            "critical-move-level CriticalAnalysisPlan selection",
+            "insertion points",
+            "confirmed citation quantity",
+            "format requirements",
+            "Non-Essay Text Blocks",
+            "Poster panel",
+            "Speaker note",
+            "Website section",
+            "Figure legend",
+            "Results text",
+            "analysis tool and method",
+            "Planning Approval",
+            "proceeds directly into writing",
+            "DataAnalysisAgent may run in parallel with IntroductionDraftAgent and MethodDraftAgent",
+            "ResultsDraftAgent and DiscussionDraftAgent must wait for DataAnalysisAgent output",
+            "scripts/build_intake_questions.py writing-gate",
+        ],
+        "references/visuals-tables-data.md": [
+            "GraphPad Prism",
+            "R Studio",
+            "Python",
+            "MatLab",
+            "scripts/build_intake_questions.py lab-analysis",
+            "scripts/build_intake_questions.py figure-plan",
+            "scripts/build_intake_questions.py figure-legend",
+            "FigureGenerationSpec",
+            "FigureLegendSpec",
+            "Do not infer the statistical test or model",
+            "two-way repeated-measures ANOVA",
+        ],
+        "agents/openai.yaml": [
+            "display the relevant brief or decision plan before every Asking Questions batch",
+            "generate dynamic request_user_input payloads with scripts/build_intake_questions.py",
+            "task type",
+            "citation count plus density",
+            "context-generated output format",
+            "lab-report analysis tool and method",
+            "poster canvas and message hierarchy",
+            "presentation timing and notes",
+            "website interaction model and platform constraints",
+            "figure purpose and source basis",
+            "figure legend depth and source or permission note",
+            "DOCX or LaTeX formatting details",
+            "paragraph-level section plan",
+            "proof logic",
+            "real paragraph labels",
+            "body paragraphs or Discussion",
+        ],
+        "references/qa-and-validation.md": [
+            "plan_or_decision_context_displayed_before_questions",
+            "citation_quantity_confirmed",
+            "format_requirements_confirmed",
+            "title_font_size_confirmed",
+            "section_by_section_plans_presented",
+            "paragraph_level_section_feedback_captured",
+            "section_questions_use_real_paragraph_labels",
+            "section_options_are_task_specific",
+            "critical_analysis_plan_presented",
+            "critical_move_selection_captured",
+            "critical_moves_have_body_or_discussion_insertion_points",
+            "task_type_confirmed",
+            "non_essay_structure_matches_task_type",
+            "lab_analysis_tool_confirmed",
+            "lab_analysis_method_confirmed",
+            "poster_story_plan_present",
+            "presentation_storyboard_present",
+            "website_interaction_plan_present",
+            "figure_generation_spec_present",
+            "figure_legend_requirements_confirmed",
+            "Task-Specific QA",
+        ],
+        "README.md": [
+            "posters, presentations, interactive websites, figure generation tasks, figure legends",
+            "displays the relevant brief, paragraph, format, or critical-analysis plan",
+            "task type",
+            "citation quantity as an approximate count plus density",
+            "analysis tool",
+            "statistical or model method",
+            "poster users",
+            "presentation users",
+            "website users",
+            "figure-generation users",
+            "figure-legend users",
+            "chat text, DOCX, LaTeX",
+            "real labels such as Abstract",
+            "body paragraphs or Discussion",
+            "Nature-style journal tables",
+        ],
+    }
+    for rel, phrases in required_phrases.items():
+        text = text_by_rel.get(rel, "")
+        lowered = text.lower()
+        for phrase in phrases:
+            if phrase.lower() not in lowered:
+                errors.append(f"Missing native intake question policy in {rel}: {phrase}")
+
+    script = ROOT / "scripts/build_intake_questions.py"
+    payloads: dict[str, object] = {}
+    scenarios = (
+        "sparse",
+        "complete",
+        "brief-details",
+        "docx-format",
+        "document-format",
+        "task-type",
+        "lab-analysis",
+        "poster-plan",
+        "presentation-plan",
+        "website-plan",
+        "figure-plan",
+        "figure-legend",
+        "section-review",
+        "critical-analysis",
+        "planning-approval",
+        "writing-gate",
+    )
+    for scenario in scenarios:
+        try:
+            completed = subprocess.run(
+                [sys.executable, str(script), scenario],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            payload = json.loads(completed.stdout)
+        except (subprocess.CalledProcessError, json.JSONDecodeError) as exc:
+            errors.append(f"Failed to build {scenario} intake payload: {exc}")
+            continue
+        payloads[scenario] = payload
+        validate_question_payload(payload, scenario, errors)
+
+    for scenario in ("sparse", "complete"):
+        payload = payloads.get(scenario)
+        if not isinstance(payload, dict):
+            continue
+        questions = payload.get("questions", [])
+        question_ids = {item.get("id") for item in questions if isinstance(item, dict)}
+        for question_id in ("citation_quantity", "format_requirements"):
+            if question_id not in question_ids:
+                errors.append(f"{scenario} payload must ask for {question_id}.")
+        labels = [
+            option.get("label", "")
+            for item in questions
+            if isinstance(item, dict)
+            for option in item.get("options", [])
+            if isinstance(option, dict)
+        ]
+        if not any(re.search(r"\d+\s*-\s*\d+", label) for label in labels):
+            errors.append(f"{scenario} payload must include a citation option with an approximate count range.")
+        for label in labels:
+            if label == "Default format (Recommended)":
+                errors.append(f"{scenario} payload must not use the old generic default format option.")
+
+    scenario_required_ids = {
+        "brief-details": ("final_language", "citation_style", "source_base"),
+        "docx-format": ("document_typography", "document_layout", "title_font_size"),
+        "document-format": ("document_typography", "document_layout", "title_font_size"),
+        "task-type": ("task_type",),
+        "lab-analysis": ("analysis_tool", "analysis_method", "analysis_scope"),
+        "poster-plan": ("poster_canvas", "poster_message_hierarchy", "poster_visual_assets"),
+        "presentation-plan": ("presentation_timing", "presentation_audience", "presentation_notes"),
+        "website-plan": ("website_output_mode", "website_interaction_model", "website_platform_constraints"),
+        "figure-plan": ("figure_purpose", "figure_source_basis", "figure_generation_tool"),
+        "figure-legend": ("legend_depth", "legend_statistics", "legend_source_note"),
+        "planning-approval": ("planning_approval",),
+        "writing-gate": ("writing_gate",),
+    }
+    for scenario, question_ids in scenario_required_ids.items():
+        payload = payloads.get(scenario)
+        if not isinstance(payload, dict):
+            continue
+        questions = payload.get("questions", [])
+        actual_ids = {item.get("id") for item in questions if isinstance(item, dict)}
+        for question_id in question_ids:
+            if question_id not in actual_ids:
+                errors.append(f"{scenario} payload must include {question_id}.")
+
+    required_label_fragments = {
+        "task-type": ("Essay", "Lab Report", "Poster", "Presentation", "Interactive Website", "Figure Generation"),
+        "lab-analysis": ("GraphPad Prism", "R Studio", "Python", "MatLab", "two-way repeated-measures ANOVA"),
+        "poster-plan": ("canvas", "message", "visual"),
+        "presentation-plan": ("timing", "audience", "Speaker notes"),
+        "website-plan": ("Interactive website", "Guided narrative", "HTML/CSS/JS"),
+        "figure-plan": ("Explain a mechanism", "User data or supplied sources", "BioRender"),
+        "figure-legend": ("Complete submit-ready legend", "sample sizes", "permission"),
+        "planning-approval": (
+            "Approve final plan",
+            "directly to writing",
+            "Revise evidence emphasis",
+            "Revise structure or scope",
+        ),
+        "writing-gate": (
+            "plan-breaking",
+            "supplied evidence",
+            "missing evidence",
+            "Revise approved plan",
+        ),
+    }
+    for scenario, fragments in required_label_fragments.items():
+        payload = payloads.get(scenario)
+        if not isinstance(payload, dict):
+            continue
+        text = json.dumps(payload)
+        for fragment in fragments:
+            if fragment not in text:
+                errors.append(f"{scenario} payload must include task-specific fragment {fragment}.")
+
+    generic_section_labels = {
+        "Include as planned (Recommended)",
+        "Condense",
+        "Omit or replace",
+        "Approve section (Recommended)",
+    }
+    generic_critical_labels = {
+        "Include (Recommended)",
+        "Use lightly",
+        "Exclude",
+        "Approve critique (Recommended)",
+        "More critical",
+        "More balanced",
+    }
+
+    payload = payloads.get("section-review")
+    if isinstance(payload, dict):
+        questions = payload.get("questions", [])
+        headers = [item.get("header", "") for item in questions if isinstance(item, dict)]
+        question_text = " ".join(item.get("question", "") for item in questions if isinstance(item, dict))
+        labels = [
+            option.get("label", "")
+            for item in questions
+            if isinstance(item, dict)
+            for option in item.get("options", [])
+            if isinstance(option, dict)
+        ]
+        if not any(header in {"Abstract", "Introduction"} for header in headers):
+            errors.append("section-review payload must use real paragraph labels in the default example.")
+        if any(re.fullmatch(r"P\d+", header) for header in headers):
+            errors.append("section-review payload must not use P-number headers.")
+        if re.search(r"\bP\d+\b", question_text):
+            errors.append("section-review payload must not refer to P-number paragraph labels.")
+        forbidden = generic_section_labels.intersection(labels)
+        if forbidden:
+            errors.append(f"section-review payload must not use generic fixed options: {sorted(forbidden)}")
+        if not any("opening" in label.lower() or "mechanism" in label.lower() or "evidence" in label.lower() for label in labels):
+            errors.append("section-review payload must include task-specific tradeoff options.")
+
+    payload = payloads.get("critical-analysis")
+    if isinstance(payload, dict):
+        questions = payload.get("questions", [])
+        headers = [item.get("header", "") for item in questions if isinstance(item, dict)]
+        question_text = " ".join(item.get("question", "") for item in questions if isinstance(item, dict))
+        labels = [
+            option.get("label", "")
+            for item in questions
+            if isinstance(item, dict)
+            for option in item.get("options", [])
+            if isinstance(option, dict)
+        ]
+        if any(re.fullmatch(r"Move \d+", header) for header in headers):
+            errors.append("critical-analysis payload must not use numbered move headers.")
+        if re.search(r"\bMove \d+\b", question_text):
+            errors.append("critical-analysis payload must not refer to numbered critical moves.")
+        forbidden = generic_critical_labels.intersection(labels)
+        if forbidden:
+            errors.append(f"critical-analysis payload must not use generic fixed options: {sorted(forbidden)}")
+        if not any("body" in label.lower() or "discussion" in label.lower() or "paragraph" in label.lower() for label in labels):
+            errors.append("critical-analysis payload must include body or Discussion insertion options.")
+
+    payload = payloads.get("brief-details")
+    if isinstance(payload, dict):
+        questions = payload.get("questions", [])
+        question_ids = {item.get("id") for item in questions if isinstance(item, dict)}
+        for question_id in ("final_language", "citation_style", "source_base"):
+            if question_id not in question_ids:
+                errors.append(f"brief-details payload must include {question_id}.")
+        labels = [
+            option.get("label", "")
+            for item in questions
+            if isinstance(item, dict)
+            for option in item.get("options", [])
+            if isinstance(option, dict)
+        ]
+        for label in (
+            "Assignment style (Recommended)",
+            "Harvard",
+            "APA 7",
+            "Course material (Recommended)",
+            "Peer-reviewed literature",
+            "Mixed source base",
+        ):
+            if label not in labels:
+                errors.append(f"brief-details payload must preserve fixed Style/Sources option {label}.")
+
+    subagents_text = text_by_rel.get("references/subagents.md", "")
+    intake_text = text_by_rel.get("references/intake-and-planning.md", "")
+    for forbidden in (
+        "RequirementRubricAgent",
+        "Requirement And Rubric Agent",
+        "AskUserAgent",
+        "RequirementClarificationAgent",
+        "PlanningApprovalAgent",
+        "WritingGateAgent",
+        "UserPreferenceAgent",
+    ):
+        if forbidden in subagents_text:
+            errors.append(f"Interactive or gatekeeping role must not be a subagent: {forbidden}")
+    for text_name, text in (
+        ("references/intake-and-planning.md", intake_text),
+        ("references/subagents.md", subagents_text),
+    ):
+        gate_index = text.lower().find("requirement/rubric/brief gate")
+        subagent_index = text.lower().find("subagents may run only after the brief is locked")
+        if gate_index == -1 or subagent_index == -1:
+            errors.append(f"{text_name} must declare the requirement/rubric/brief gate before subagent execution.")
+        elif gate_index > subagent_index:
+            errors.append(f"{text_name} must describe the requirement/rubric/brief gate before allowing subagents.")
+    if re.search(
+        r"(ask user|requirement clarification|planning approval|writing gate|user preference confirmation)\s+agent",
+        subagents_text,
+        flags=re.IGNORECASE,
+    ):
+        errors.append("Interactive steps must not be described as subagent roles.")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--strict", action="store_true", help="fail on template placeholders")
+    args = parser.parse_args()
+
+    errors: list[str] = []
+    check_required_files(errors)
+    if (ROOT / "SKILL.md").exists():
+        check_skill_frontmatter(errors)
+    check_english_only(errors, args.strict)
+    check_readme_and_license(errors)
+    check_multiple_skill_system(errors)
+    check_intake_question_policy(errors)
+
+    if errors:
+        for error in errors:
+            print(f"ERROR: {error}", file=sys.stderr)
+        return 1
+
+    print("coursework-killer validation passed")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

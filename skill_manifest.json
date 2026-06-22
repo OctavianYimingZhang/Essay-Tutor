@@ -1,26 +1,26 @@
 {
   "schema_version": 1,
-  "skill_id": "essay-tutor",
+  "skill_id": "coursework-killer",
   "repo": "OctavianYimingZhang/Essay-Tutor",
   "branch": "main",
   "entrypoint": "SKILL.md",
   "focused_skills": [
-    "essay-tutor-intake-planning",
-    "essay-tutor-research-citation",
-    "essay-tutor-draft-revise",
-    "essay-tutor-critical-analysis",
-    "essay-tutor-lab-data",
-    "essay-tutor-figures-legends",
-    "essay-tutor-posters-presentations",
-    "essay-tutor-website-coursework",
-    "essay-tutor-docx-formatting",
-    "essay-tutor-final-qa"
+    "coursework-killer-intake-planning",
+    "coursework-killer-research-citation",
+    "coursework-killer-draft-revise",
+    "coursework-killer-critical-analysis",
+    "coursework-killer-lab-data",
+    "coursework-killer-figures-legends",
+    "coursework-killer-posters-presentations",
+    "coursework-killer-website-coursework",
+    "coursework-killer-docx-formatting",
+    "coursework-killer-final-qa"
   ],
   "focused_skill_install_command": "python3 scripts/install_multiple_skills.py",
   "license": "MIT",
   "health_commands": [
     "python3 -m compileall -q scripts",
     "python3 /Users/octavianzhang/.codex/skills/.system/skill-creator/scripts/quick_validate.py .",
-    "python3 scripts/validate_essay_tutor.py --strict"
+    "python3 scripts/validate_coursework_killer.py --strict"
   ]
 }

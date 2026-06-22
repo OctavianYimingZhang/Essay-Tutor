@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install Essay Tutor focused skills as top-level local Codex skills."""
+"""Install CourseWork Killer focused skills as top-level local Codex skills."""
 
 from __future__ import annotations
 
@@ -13,9 +13,23 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "skills"
 DEFAULT_INSTALL_ROOT = ROOT.parent
-MARKER = ".essay_tutor_generated"
+MARKER = ".coursework_killer_generated"
+LEGACY_MARKER = ".essay_tutor_generated"
 
 FOCUSED_SKILLS = (
+    "coursework-killer-intake-planning",
+    "coursework-killer-research-citation",
+    "coursework-killer-draft-revise",
+    "coursework-killer-critical-analysis",
+    "coursework-killer-lab-data",
+    "coursework-killer-figures-legends",
+    "coursework-killer-posters-presentations",
+    "coursework-killer-website-coursework",
+    "coursework-killer-docx-formatting",
+    "coursework-killer-final-qa",
+)
+
+LEGACY_FOCUSED_SKILLS = (
     "essay-tutor-intake-planning",
     "essay-tutor-research-citation",
     "essay-tutor-draft-revise",
@@ -43,6 +57,19 @@ def compare_dirs(source: pathlib.Path, target: pathlib.Path) -> list[str]:
 
 def install(install_root: pathlib.Path, check: bool, dry_run: bool) -> int:
     errors: list[str] = []
+    if not check:
+        for skill in LEGACY_FOCUSED_SKILLS:
+            target = install_root / skill
+            if not target.exists():
+                continue
+            if not (target / LEGACY_MARKER).is_file():
+                errors.append(f"refusing to remove unmanaged legacy skill: {target}")
+                continue
+            if dry_run:
+                print(f"would remove legacy skill {target}")
+                continue
+            shutil.rmtree(target)
+            print(f"removed legacy skill {target}")
     for skill in FOCUSED_SKILLS:
         source = SOURCE_ROOT / skill
         target = install_root / skill

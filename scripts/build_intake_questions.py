@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build request_user_input payloads for essay-tutor planning questions."""
+"""Build request_user_input payloads for coursework-killer planning questions."""
 
 from __future__ import annotations
 
@@ -671,6 +671,64 @@ def critical_analysis_payload(context: dict[str, Any]) -> dict[str, Any]:
     return {"questions": questions}
 
 
+def planning_approval_payload(context: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "questions": [
+            question(
+                header="Approval",
+                question_id="planning_approval",
+                prompt="After reviewing the displayed final integrated plan, what should happen next?",
+                options=option_list(
+                    context.get("planning_approval_options"),
+                    [
+                        (
+                            "Approve final plan (Recommended)",
+                            "Proceed directly to writing from the approved plan without a redundant start-writing confirmation.",
+                        ),
+                        (
+                            "Revise evidence emphasis",
+                            "Change the source balance, citation distribution, data emphasis, or critical-analysis weighting before writing.",
+                        ),
+                        (
+                            "Revise structure or scope",
+                            "Change the thesis scope, section order, output contract, word budget, or task-specific workflow before writing.",
+                        ),
+                    ],
+                ),
+            )
+        ]
+    }
+
+
+def writing_gate_payload(context: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "questions": [
+            question(
+                header="Writing",
+                question_id="writing_gate",
+                prompt="A plan-breaking issue appeared after approval. How should the main agent resolve it before continuing?",
+                options=option_list(
+                    context.get("writing_gate_options"),
+                    [
+                        (
+                            "Resolve with supplied evidence (Recommended)",
+                            "Narrow, reword, or omit the affected claim using verified supplied evidence and continue writing.",
+                        ),
+                        (
+                            "Pause and supply missing evidence",
+                            "Stop the affected section until the missing source, data, method, rubric, or format detail is supplied.",
+                        ),
+                        (
+                            "Revise approved plan",
+                            "Update the thesis, structure, evidence scope, citation strategy, or output contract before continuing.",
+                        ),
+                    ],
+                ),
+            )
+        ]
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -690,6 +748,8 @@ def main() -> int:
             "figure-legend",
             "section-review",
             "critical-analysis",
+            "planning-approval",
+            "writing-gate",
         ),
         help="Question payload scenario to generate.",
     )
@@ -722,8 +782,12 @@ def main() -> int:
         payload = figure_legend_payload(context)
     elif args.scenario == "section-review":
         payload = section_review_payload(context)
-    else:
+    elif args.scenario == "critical-analysis":
         payload = critical_analysis_payload(context)
+    elif args.scenario == "planning-approval":
+        payload = planning_approval_payload(context)
+    else:
+        payload = writing_gate_payload(context)
     json.dump(payload, sys.stdout, ensure_ascii=True, indent=2)
     sys.stdout.write("\n")
     return 0

@@ -1,6 +1,0 @@
-interface:
-  display_name: "Essay Lab Data"
-  short_description: "Plan lab reports and result analysis"
-  default_prompt: "Use $essay-tutor-lab-data to plan my lab report Results and verify the analysis method before writing."
-policy:
-  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Essay Critical Analysis"
+  short_description: "Add evaluative stance and critique"
+  default_prompt: "Use $coursework-killer-critical-analysis to build a CriticalAnalysisPlan and insert stronger critique into my Discussion."
+policy:
+  allow_implicit_invocation: true

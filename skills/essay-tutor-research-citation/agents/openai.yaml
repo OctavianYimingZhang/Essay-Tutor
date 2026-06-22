@@ -1,6 +1,0 @@
-interface:
-  display_name: "Essay Research Citation"
-  short_description: "Map sources and control citations"
-  default_prompt: "Use $essay-tutor-research-citation to build an evidence map, choose citation density, and check my references."
-policy:
-  allow_implicit_invocation: true

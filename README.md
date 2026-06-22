@@ -1,6 +1,6 @@
-# Essay Tutor Codex Skill
+# CourseWork Killer Codex Skill
 
-`essay-tutor` is the Index skill for a multiple-skill Essay Tutor system. It routes academic writing and assessed coursework tasks to focused skills for interaction-first brief reconstruction, evidence mapping, structure planning, citation control, data or figure handling, figure legends, poster and presentation planning, interactive website planning, DOCX formatting, and final quality checks.
+`coursework-killer` is the Index skill for a multiple-skill CourseWork Killer system. It routes academic writing and assessed coursework tasks to focused skills for interaction-first brief reconstruction, evidence mapping, structure planning, citation control, data or figure handling, figure legends, poster and presentation planning, interactive website planning, DOCX formatting, and final quality checks.
 
 The Skill is designed for assessed essays, lab reports, posters, presentations, interactive websites, figure generation tasks, figure legends, literature reviews, proposals, case studies, discussion sections, revision tasks, and data-supported reports where accuracy, traceability, examiner fit, and clear academic communication matter.
 
@@ -10,17 +10,17 @@ Run `python3 scripts/install_multiple_skills.py` after cloning or updating this 
 
 | Skill | Use |
 | --- | --- |
-| `essay-tutor` | Route broad or mixed coursework requests to the correct focused workflow. |
-| `essay-tutor-intake-planning` | Reconstruct the brief, ask plan-changing questions, lock requirements, and build section or task-specific plans. |
-| `essay-tutor-research-citation` | Build source maps, choose citation density, support claims, and check references. |
-| `essay-tutor-draft-revise` | Draft or revise academic prose from a confirmed plan and evidence map. |
-| `essay-tutor-critical-analysis` | Add evaluative stance, limitations, synthesis, and CriticalAnalysisPlan insertions. |
-| `essay-tutor-lab-data` | Handle lab reports, analysis tools, statistical methods, Results, figures, and tables. |
-| `essay-tutor-figures-legends` | Specify source-backed figures, generation plans, captions, and figure legends. |
-| `essay-tutor-posters-presentations` | Plan posters, slide decks, storyboards, visual hierarchy, notes, and scripts. |
-| `essay-tutor-website-coursework` | Plan interactive academic websites, user journeys, navigation, media, and citations. |
-| `essay-tutor-docx-formatting` | Format and inspect Word/DOCX academic documents. |
-| `essay-tutor-final-qa` | Check final requirement fit, citations, structure, data, visuals, and formatting. |
+| `coursework-killer` | Route broad or mixed coursework requests to the correct focused workflow. |
+| `coursework-killer-intake-planning` | Reconstruct the brief, ask plan-changing questions, lock requirements, and build section or task-specific plans. |
+| `coursework-killer-research-citation` | Build source maps, choose citation density, support claims, and check references. |
+| `coursework-killer-draft-revise` | Draft or revise academic prose from a confirmed plan and evidence map. |
+| `coursework-killer-critical-analysis` | Add evaluative stance, limitations, synthesis, and CriticalAnalysisPlan insertions. |
+| `coursework-killer-lab-data` | Handle lab reports, analysis tools, statistical methods, Results, figures, and tables. |
+| `coursework-killer-figures-legends` | Specify source-backed figures, generation plans, captions, and figure legends. |
+| `coursework-killer-posters-presentations` | Plan posters, slide decks, storyboards, visual hierarchy, notes, and scripts. |
+| `coursework-killer-website-coursework` | Plan interactive academic websites, user journeys, navigation, media, and citations. |
+| `coursework-killer-docx-formatting` | Format and inspect Word/DOCX academic documents. |
+| `coursework-killer-final-qa` | Check final requirement fit, citations, structure, data, visuals, and formatting. |
 
 ## What It Does
 
@@ -43,8 +43,8 @@ Run `python3 scripts/install_multiple_skills.py` after cloning or updating this 
 ```bash
 mkdir -p ~/.codex/skills
 git clone https://github.com/OctavianYimingZhang/Essay-Tutor.git \
-  ~/.codex/skills/essay-tutor
-cd ~/.codex/skills/essay-tutor
+  ~/.codex/skills/coursework-killer
+cd ~/.codex/skills/coursework-killer
 python3 scripts/skill_maintenance.py doctor
 python3 scripts/install_multiple_skills.py
 python3 scripts/install_multiple_skills.py --check
@@ -53,32 +53,32 @@ python3 scripts/install_multiple_skills.py --check
 ## Use
 
 ```text
-$essay-tutor
+$coursework-killer
 Help me plan an assessed essay from the supplied brief and readings. Diagnose the materials, ask plan-changing questions, then make a structure plan for my confirmation.
 ```
 
 ```text
-$essay-tutor-intake-planning
+$coursework-killer-intake-planning
 Reconstruct this assignment brief, ask the missing plan-changing questions, and build a section-by-section plan.
 ```
 
 ```text
-$essay-tutor
+$coursework-killer
 Use the supplied lab handbook, rubric, spreadsheet, and GraphPad Prism file to produce a Manchester Harvard lab report in English DOCX format.
 ```
 
 ```text
-$essay-tutor-lab-data
+$coursework-killer-lab-data
 Check this spreadsheet and Prism output before writing the Results section.
 ```
 
 ```text
-$essay-tutor
+$coursework-killer
 Plan an assessed academic poster from the brief, dataset, and example poster. Ask the task-specific questions before making the poster story plan.
 ```
 
 ```text
-$essay-tutor
+$coursework-killer
 Help me create a figure and complete figure legend for this lab report. Confirm the source basis, analysis method, and legend detail before drafting it.
 ```
 
@@ -114,6 +114,7 @@ Claims, statistics, mechanisms, citation metadata, and figure content are ground
 The Skill uses interaction-first planning for new academic coursework:
 
 - It expects Codex Plan Mode for native Asking Questions because `request_user_input` is a Plan Mode tool.
+- It treats the requirement/rubric/brief gate as a main-agent responsibility before any subagent can start.
 - It displays the relevant brief, paragraph, format, or critical-analysis plan before every Asking Questions batch.
 - It generates `request_user_input` payloads with `scripts/build_intake_questions.py` before asking plan-changing questions.
 - It asks for task type when the output could be an essay, lab report, poster, presentation, interactive website, figure generation task, or figure legend.
@@ -128,7 +129,8 @@ The Skill uses interaction-first planning for new academic coursework:
 - It compares user drafts with generated results when both are supplied before planning revision.
 - It plans essays with natural section rationales, paragraph output paths, and proof logic rather than mechanical planning fields.
 - It plans posters, presentations, websites, figures, and legends with task-specific story, visual, interaction, source, and submission constraints instead of essay-only section architecture.
-- It drafts from the confirmed plan.
+- It asks for Planning Approval with `scripts/build_intake_questions.py planning-approval`, then drafts directly from the approved plan without a redundant start-writing question.
+- It uses `scripts/build_intake_questions.py writing-gate` only when a plan-breaking issue appears after approval and the main agent needs a user decision.
 - In Codex Plan Mode, it uses the required `<proposed_plan>` format for formal plans.
 
 ## Density And Style
@@ -161,7 +163,7 @@ Third-party code stays outside the Skill package unless the licence supports bun
 ```bash
 python3 scripts/install_multiple_skills.py --check
 python3 scripts/skill_maintenance.py doctor
-python3 scripts/validate_essay_tutor.py --strict
+python3 scripts/validate_coursework_killer.py --strict
 ```
 
 ## License

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Maintenance commands for the essay-tutor skill package."""
+"""Maintenance commands for the coursework-killer skill package."""
 
 from __future__ import annotations
 
@@ -26,13 +26,13 @@ def doctor() -> int:
             str(pathlib.Path.home() / ".codex/skills/.system/skill-creator/scripts/quick_validate.py"),
             str(ROOT),
         ],
-        [sys.executable, "scripts/validate_essay_tutor.py", "--strict"],
+        [sys.executable, "scripts/validate_coursework_killer.py", "--strict"],
     ]
     for command in commands:
         code = run(command)
         if code != 0:
             return code
-    print("essay-tutor doctor passed")
+    print("coursework-killer doctor passed")
     return 0
 
 

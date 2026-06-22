@@ -1,14 +1,14 @@
 ---
-name: essay-tutor
-description: Index and router for the Essay Tutor multiple-skill academic coursework system covering intake and planning, research and citation, drafting and revision, critical analysis, lab reports and data, figures and legends, posters and presentations, interactive websites, DOCX formatting, and final QA. Use when the user asks broadly for Essay Tutor, needs assessed academic writing or coursework support, or needs multiple focused Essay Tutor skills coordinated.
+name: coursework-killer
+description: Index and router for the CourseWork Killer multiple-skill academic coursework system covering intake and planning, research and citation, drafting and revision, critical analysis, lab reports and data, figures and legends, posters and presentations, interactive websites, DOCX formatting, and final QA. Use when the user asks broadly for CourseWork Killer, needs assessed academic writing or coursework support, or needs multiple focused CourseWork Killer skills coordinated.
 ---
 
-# Essay Tutor
+# CourseWork Killer
 
-Use this Skill as the Index for the Essay Tutor multiple-skill system. Route broad or mixed academic-writing requests to the right focused skill, then use the shared tutoring workflow:
+Use this Skill as the Index for the CourseWork Killer multiple-skill system. Route broad or mixed academic-writing requests to the right focused skill, then use the shared tutoring workflow:
 
 ```text
-intake -> material diagnosis -> Asking Questions -> locked brief -> evidence/comparison map -> structure plan -> user confirmation -> draft/revision -> visual + citation QA -> output
+intake -> material diagnosis -> requirement/rubric/brief gate -> Asking Questions -> locked brief -> optional non-interactive subagents -> evidence/comparison map -> structure plan -> Planning Approval -> writing -> QA/revision -> output
 ```
 
 Keep the workflow light. Read only the reference files that match the current task, and use the user's assignment material as the main source of truth.
@@ -17,20 +17,22 @@ Plan Mode is required for the native Asking Questions flow because `request_user
 
 ## Multiple Skill System
 
-Treat `essay-tutor` as the router. If a request clearly maps to one focused workflow, read and follow that focused skill before continuing. If a request spans multiple workflows, sequence the focused skills in the order that locks requirements first and validates output last.
+Treat `coursework-killer` as the router. If a request clearly maps to one focused workflow, read and follow that focused skill before continuing. If a request spans multiple workflows, sequence the focused skills in the order that locks requirements first and validates output last.
+
+Requirement, rubric, brief locking, Ask User, Planning Approval, writing gate decisions, and user preference confirmation stay with the main agent. Use subagents only after the brief is locked and only for non-interactive bounded tasks whose dependencies are satisfied.
 
 Focused skills:
 
-- `essay-tutor-intake-planning`: brief reconstruction, task-type diagnosis, Asking Questions, locked brief, section plans, and CriticalAnalysisPlan.
-- `essay-tutor-research-citation`: source discovery, evidence maps, claim-level citation support, citation quantity, and references.
-- `essay-tutor-draft-revise`: drafting, rewriting, user-draft comparison, prose quality, paragraph logic, and revision boundaries.
-- `essay-tutor-critical-analysis`: evaluative stance, critical moves, limitations, synthesis, and Discussion-level critique.
-- `essay-tutor-lab-data`: lab reports, data-supported coursework, analysis tools, statistical methods, Results, figures, and tables.
-- `essay-tutor-figures-legends`: source-backed figure specifications, figure generation plans, captions, and submit-ready legends.
-- `essay-tutor-posters-presentations`: academic posters, slide decks, storyboards, message hierarchy, speaker notes, and visual planning.
-- `essay-tutor-website-coursework`: interactive academic websites, user journeys, interaction models, and content architecture.
-- `essay-tutor-docx-formatting`: Word/DOCX formatting, document style, title size, layout, references, and visual inspection.
-- `essay-tutor-final-qa`: final requirement fit, citations, structure, data, visuals, formatting, and delivery checks.
+- `coursework-killer-intake-planning`: brief reconstruction, task-type diagnosis, Asking Questions, locked brief, section plans, and CriticalAnalysisPlan.
+- `coursework-killer-research-citation`: source discovery, evidence maps, claim-level citation support, citation quantity, and references.
+- `coursework-killer-draft-revise`: drafting, rewriting, user-draft comparison, prose quality, paragraph logic, and revision boundaries.
+- `coursework-killer-critical-analysis`: evaluative stance, critical moves, limitations, synthesis, and Discussion-level critique.
+- `coursework-killer-lab-data`: lab reports, data-supported coursework, analysis tools, statistical methods, Results, figures, and tables.
+- `coursework-killer-figures-legends`: source-backed figure specifications, figure generation plans, captions, and submit-ready legends.
+- `coursework-killer-posters-presentations`: academic posters, slide decks, storyboards, message hierarchy, speaker notes, and visual planning.
+- `coursework-killer-website-coursework`: interactive academic websites, user journeys, interaction models, and content architecture.
+- `coursework-killer-docx-formatting`: Word/DOCX formatting, document style, title size, layout, references, and visual inspection.
+- `coursework-killer-final-qa`: final requirement fit, citations, structure, data, visuals, formatting, and delivery checks.
 
 Shared resources live in this root package. When maintaining the local installation, run `python3 scripts/install_multiple_skills.py` to copy the focused skill folders into the top-level Codex skills directory so they appear as separate skill chips.
 
@@ -40,6 +42,7 @@ Shared resources live in this root package. When maintaining the local installat
 - Start academic writing tasks by reconstructing and confirming the assignment brief with the user before planning.
 - Make the first user-facing output for any new or unclear writing request a displayed brief or decision plan followed by a Codex Asking Questions decision batch generated from the intake payload script.
 - Create a structure plan only after all plan-changing requirements are verified from materials or explicitly selected by the user, including task type, citation quantity, format requirements, analysis tool and method for lab reports, visual or interaction requirements for non-essay outputs, figure legend requirements, and DOCX title font size when formatted output is requested.
+- Do not start evidence, planning, writing, data, citation, visual, or QA subagents before the requirement/rubric/brief gate is complete and the brief is locked.
 - Build a requirement model from the prompt, rubric, brief, course material, examples, and user preferences before planning detailed prose. Keep that model internal unless the user explicitly asks to see it.
 - Default to the strongest academic standard the brief can support. Ask about course-stage requirements only when they change marking criteria, genre conventions, permissible evidence, or writing identity.
 - Use verified evidence before drafting substantive claims, statistics, methods, citations, lecturer expectations, or source metadata.
@@ -79,12 +82,14 @@ Shared resources live in this root package. When maintaining the local installat
    - Present each section plan as paragraph-level choices using real labels such as `Abstract`, `Introduction`, `Main Body Paragraph 1: ...`, `Discussion Paragraph 1: ...`, and `Conclusion`; use task-specific options that reflect real tradeoffs in the displayed plan.
    - Present the CriticalAnalysisPlan after the paragraph plan has been discussed; when planning Discussion, reserve space for synthesis and critical analysis so later critical moves have a natural insertion point.
    - In Codex Plan Mode, use the required `<proposed_plan>` block for the final plan when active mode requires it; outside Plan Mode, use the same plan structure in normal chat.
-   - Draft from the confirmed plan.
+   - Run Planning Approval with `scripts/build_intake_questions.py planning-approval` after the final integrated plan is visible.
+   - Draft from the approved plan immediately; do not ask a redundant start-writing question.
 
 4. **Drafting and revision**
    - Read `references/drafting-and-critical-analysis.md`.
    - Read `references/critical-writing-bank.md` when the task needs stronger critical stance, discussion, evaluation of studies, method limits, theory limits, or constructive suggestions.
    - Draft from the structure plan and evidence map.
+   - If a plan-breaking issue appears after approval, keep the decision with the main agent and use `scripts/build_intake_questions.py writing-gate` when user input is required.
    - Use revision passes to improve paragraph function, evidence fit, interpretation, scope, citation prose, and reader flow.
 
 5. **Figures, tables, and data**
@@ -119,7 +124,7 @@ Run these checks before committing or publishing changes:
 ```bash
 python3 scripts/install_multiple_skills.py --check
 python3 scripts/skill_maintenance.py doctor
-python3 scripts/validate_essay_tutor.py --strict
+python3 scripts/validate_coursework_killer.py --strict
 ```
 
 Use optional integrations such as citation-management tools, GraphPad Prism, R Studio, Python, MatLab, spreadsheet tools, BioRender, image generation, presentation tools, website-building tools, or document tools through their own Skills or local applications. Keep third-party code outside this Skill unless the licence supports bundling.

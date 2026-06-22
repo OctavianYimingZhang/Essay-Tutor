@@ -228,7 +228,7 @@ Before publishing Skill changes, run:
 
 ```bash
 python3 scripts/skill_maintenance.py doctor
-python3 scripts/validate_essay_tutor.py --strict
+python3 scripts/validate_coursework_killer.py --strict
 ```
 
 Review that `SKILL.md` links to existing references, repository content remains English, and guidance is organised by function.

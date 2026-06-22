@@ -30,12 +30,23 @@ Before drafting, confirm that the tutoring conversation has resolved:
 - poster, presentation, website, figure, or figure legend task decisions when those formats are requested;
 - section-by-section plan approval;
 - critical-move-level CriticalAnalysisPlan selection after the paragraph plan has been reviewed;
+- Planning Approval from the user after the final integrated plan is displayed;
 - whether user-draft structure, paragraphs, phrasing patterns, or source choices should be preserved, revised, or replaced;
 - output use, such as submission draft, revision notes, model answer, or DOCX file.
 
 When new evidence changes the best answer, update the plan visibly before changing the direction of the draft.
 
 When drafting or revising, make the writing choices traceable to the confirmed plan. Explain consequential structure, evidence, or revision decisions briefly when they affect the user's learning or approval; keep internal workflow metadata out of the final essay body.
+
+## Approved Plan Writing
+
+After the user approves the final integrated plan, the main agent proceeds directly into writing. Do not ask a second confirmation such as whether to start writing.
+
+Before parallel writing, lock each section contract: heading, section function, paragraph role, evidence scope, citation density, critical-analysis move, transition role, output format, and any task-specific method, data, visual, interaction, or legend requirement. A subagent may draft only inside that locked section contract.
+
+For lab reports, DataAnalysisAgent may run in parallel with IntroductionDraftAgent and MethodDraftAgent after the brief and section contracts are locked. ResultsDraftAgent and DiscussionDraftAgent must wait for DataAnalysisAgent output because those sections depend on verified result values, uncertainty, figures, tables, exclusions, and method notes.
+
+Subagents must not change thesis, structure, citation strategy, evidence scope, analysis method, figure or table contract, format contract, or final language. If a subagent finds a plan-breaking issue after approval, it returns the issue to the main agent. The main agent then decides whether to continue within the approved plan, revise the plan, or use `scripts/build_intake_questions.py writing-gate` to ask the user for the required decision.
 
 ## Paragraph Logic
 

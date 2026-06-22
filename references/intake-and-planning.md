@@ -69,6 +69,21 @@ ComparisonDiagnosis:
 
 Use this diagnosis to decide what to preserve, what to strengthen, and how the revised plan should improve argument depth, paragraph function, evidence density, critical stance, and formatting.
 
+## Strict Workflow Gate
+
+Requirement/rubric/brief gate: the main agent owns the full requirement, rubric, and brief lock before any planning or writing delegation starts. The workflow order is:
+
+1. The main agent completes material diagnosis from supplied prompts, files, rubrics, examples, drafts, data, screenshots, style guides, and output instructions.
+2. The main agent extracts the requirement, rubric, and `AssignmentBrief`, classifies every material item, and resolves every plan-changing gap with Ask User or source verification.
+3. The brief is locked only when no unresolved item can change task type, thesis direction, evidence depth, citation quantity, citation strategy, final language, output form, format requirements, section density, visual hierarchy, interaction design, analysis tool, analysis method, figure legend requirements, critical-analysis stance, or target standard.
+4. Subagents may run only after the brief is locked. Do not start evidence, planning, drafting, data, citation, visual, or QA subagents while `unresolved_plan_changing_items` contains any blocking item.
+5. After the locked brief, the main agent may use only non-interactive subagents for bounded work that can proceed independently, then integrates their outputs into the evidence map, section contracts, CriticalAnalysisPlan, and final plan.
+6. The main agent presents the final integrated plan and runs Planning Approval with `scripts/build_intake_questions.py planning-approval`.
+7. Once the user approves the final plan, the main agent proceeds directly into writing without asking again whether to start.
+8. After writing, run the QA and revision pass against the locked brief, approved plan, evidence map, citations, data, visuals, and output format.
+
+Interactive tasks remain with the main agent: Ask User, requirement clarification, rubric interpretation, user preference confirmation, Planning Approval, and any writing gate needed after approval. If a subagent finds a plan-breaking issue, it must return a concise escalation note to the main agent instead of asking the user or changing the plan.
+
 ## Readiness States
 
 Classify each material item before planning:
@@ -376,6 +391,8 @@ Treat topic-specific claims from exemplars as leads. Bring them into the final w
 
 ## Approval Flow
 
-For academic writing tasks, run a `request_user_input` Question Batch first, lock the brief, ask the task-specific workflow questions needed for lab reports, posters, presentations, interactive websites, figure generation, or figure legends, ask the DOCX title-font-size question when formatted file output is selected, present and resolve each paragraph-level SectionPlan when the task has prose sections, present and resolve the critical-move-level CriticalAnalysisPlan when evaluative writing is needed, then present the final integrated decision-complete plan for user double-check. In Codex Plan Mode, use the required `<proposed_plan>` format only for the final integrated plan unless the active system instructions require otherwise. Outside Plan Mode, use the same structure in normal chat.
+For academic writing tasks, run a `request_user_input` Question Batch first, lock the brief, ask the task-specific workflow questions needed for lab reports, posters, presentations, interactive websites, figure generation, or figure legends, ask the DOCX title-font-size question when formatted file output is selected, present and resolve each paragraph-level SectionPlan when the task has prose sections, present and resolve the critical-move-level CriticalAnalysisPlan when evaluative writing is needed, then present the final integrated decision-complete plan for Planning Approval. In Codex Plan Mode, use the required `<proposed_plan>` format only for the final integrated plan unless the active system instructions require otherwise. Outside Plan Mode, use the same structure in normal chat.
 
-Draft from the confirmed plan. If the user changes requirements, update and relock the brief before revising the plan or drafting.
+Run Planning Approval with `scripts/build_intake_questions.py planning-approval` after the final integrated plan is visible. If the user approves, draft from the approved plan immediately; do not ask a redundant "start writing" question. If the user requests a plan change, update the affected brief fields, relock the brief, and revise the plan before drafting.
+
+If a plan-breaking issue appears after approval, use `scripts/build_intake_questions.py writing-gate` only from the main agent. Subagents may report the issue, but they must not ask the user, change the thesis, change the structure, change the citation strategy, or alter the output contract.
