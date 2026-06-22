@@ -1,5 +1,5 @@
 interface:
-  display_name: "Essay Intake Planning"
+  display_name: "CourseWork Intake Planning"
   short_description: "Lock briefs and build coursework plans"
   default_prompt: "Use $coursework-killer-intake-planning to reconstruct my assignment brief, ask the plan-changing questions, and build a confirmed structure plan."
 policy:

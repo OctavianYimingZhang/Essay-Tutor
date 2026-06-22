@@ -1,5 +1,5 @@
 interface:
-  display_name: "Essay Posters Presentations"
+  display_name: "CourseWork Posters Presentations"
   short_description: "Plan posters and presentation storyboards"
   default_prompt: "Use $coursework-killer-posters-presentations to build a rubric-aligned poster or slide storyboard."
 policy:

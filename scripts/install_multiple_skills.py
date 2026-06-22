@@ -48,6 +48,10 @@ def compare_dirs(source: pathlib.Path, target: pathlib.Path) -> list[str]:
     comparison = filecmp.dircmp(source, target)
     for name in comparison.left_only:
         mismatches.append(f"missing in target: {target / name}")
+    for name in comparison.right_only:
+        if name == MARKER:
+            continue
+        mismatches.append(f"extra in target: {target / name}")
     for name in comparison.diff_files:
         mismatches.append(f"different file: {target / name}")
     for subdir in comparison.common_dirs:

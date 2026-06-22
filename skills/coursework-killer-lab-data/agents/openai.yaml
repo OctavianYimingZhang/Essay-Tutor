@@ -1,5 +1,5 @@
 interface:
-  display_name: "Essay Lab Data"
+  display_name: "CourseWork Lab Data"
   short_description: "Plan lab reports and result analysis"
   default_prompt: "Use $coursework-killer-lab-data to plan my lab report Results and verify the analysis method before writing."
 policy:

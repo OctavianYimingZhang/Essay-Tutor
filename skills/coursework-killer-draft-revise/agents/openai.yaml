@@ -1,5 +1,5 @@
 interface:
-  display_name: "Essay Draft Revise"
+  display_name: "CourseWork Draft Revise"
   short_description: "Draft and revise academic prose"
   default_prompt: "Use $coursework-killer-draft-revise to revise my academic draft against the confirmed plan and evidence map."
 policy:

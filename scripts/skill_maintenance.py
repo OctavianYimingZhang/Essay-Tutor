@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import pathlib
 import subprocess
 import sys
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+SCRIPTS_CACHE = ROOT / "scripts" / "__pycache__"
 
 
 def run(command: list[str]) -> int:
@@ -18,9 +20,15 @@ def run(command: list[str]) -> int:
     return completed.returncode
 
 
+def run_compile_check() -> int:
+    command = [sys.executable, "-m", "compileall", "-q", "scripts"]
+    code = run(command)
+    shutil.rmtree(SCRIPTS_CACHE, ignore_errors=True)
+    return code
+
+
 def doctor() -> int:
     commands = [
-        [sys.executable, "-m", "compileall", "-q", "scripts"],
         [
             sys.executable,
             str(pathlib.Path.home() / ".codex/skills/.system/skill-creator/scripts/quick_validate.py"),
@@ -28,6 +36,9 @@ def doctor() -> int:
         ],
         [sys.executable, "scripts/validate_coursework_killer.py", "--strict"],
     ]
+    code = run_compile_check()
+    if code != 0:
+        return code
     for command in commands:
         code = run(command)
         if code != 0:

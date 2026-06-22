@@ -119,20 +119,53 @@ def check_readme_and_license(errors: list[str]) -> None:
         errors.append("LICENSE must include the copyright holder.")
 
 
+def metadata_value(text: str, key: str) -> str:
+    match = re.search(rf"^\s+{re.escape(key)}:\s*\"([^\"]*)\"\s*$", text, flags=re.MULTILINE)
+    return match.group(1) if match else ""
+
+
+def check_openai_metadata(errors: list[str]) -> None:
+    root_metadata = (ROOT / "agents/openai.yaml").read_text(encoding="utf-8") if (ROOT / "agents/openai.yaml").exists() else ""
+    root_display = metadata_value(root_metadata, "display_name")
+    root_prompt = metadata_value(root_metadata, "default_prompt")
+    if root_display != "CourseWork Killer":
+        errors.append("agents/openai.yaml display_name must be CourseWork Killer.")
+    if "$coursework-killer" not in root_prompt:
+        errors.append("agents/openai.yaml default_prompt must mention $coursework-killer.")
+    if len(root_prompt) > 220:
+        errors.append("agents/openai.yaml default_prompt must stay short and not duplicate workflow rules.")
+    if "Essay " in root_metadata or "Essay Tutor" in root_metadata:
+        errors.append("agents/openai.yaml must not use old Essay Tutor branding.")
+
+    for skill in FOCUSED_SKILLS:
+        metadata_path = ROOT / "skills" / skill / "agents/openai.yaml"
+        metadata = metadata_path.read_text(encoding="utf-8") if metadata_path.exists() else ""
+        display = metadata_value(metadata, "display_name")
+        prompt = metadata_value(metadata, "default_prompt")
+        short_description = metadata_value(metadata, "short_description")
+        if "Essay " in metadata or "Essay Tutor" in metadata:
+            errors.append(f"{skill} agents/openai.yaml must not use old Essay Tutor branding.")
+        if "CourseWork" not in display:
+            errors.append(f"{skill} agents/openai.yaml display_name must use CourseWork branding.")
+        if f"Use ${skill}" not in prompt:
+            errors.append(f"{skill} agents/openai.yaml default_prompt must mention ${skill}.")
+        if len(prompt) > 220:
+            errors.append(f"{skill} agents/openai.yaml default_prompt must stay short.")
+        if not 25 <= len(short_description) <= 64:
+            errors.append(f"{skill} agents/openai.yaml short_description must be 25-64 characters.")
+
+
 def check_multiple_skill_system(errors: list[str]) -> None:
     root_skill = (ROOT / "SKILL.md").read_text(encoding="utf-8") if (ROOT / "SKILL.md").exists() else ""
-    readme = (ROOT / "README.md").read_text(encoding="utf-8") if (ROOT / "README.md").exists() else ""
     manifest = json.loads((ROOT / "skill_manifest.json").read_text(encoding="utf-8")) if (ROOT / "skill_manifest.json").exists() else {}
     manifest_skills = set(manifest.get("focused_skills", []))
     if "Multiple Skill System" not in root_skill:
         errors.append("SKILL.md must describe the Multiple Skill System router.")
-    if "scripts/install_multiple_skills.py" not in readme or "scripts/install_multiple_skills.py" not in root_skill:
-        errors.append("README.md and SKILL.md must document focused-skill installation.")
+    if "scripts/install_multiple_skills.py" not in root_skill:
+        errors.append("SKILL.md must document focused-skill installation.")
     for skill in FOCUSED_SKILLS:
         if skill not in root_skill:
             errors.append(f"SKILL.md route map must include {skill}.")
-        if skill not in readme:
-            errors.append(f"README.md focused skill table must include {skill}.")
         if skill not in manifest_skills:
             errors.append(f"skill_manifest.json focused_skills must include {skill}.")
         skill_dir = ROOT / "skills" / skill
@@ -198,8 +231,6 @@ def check_intake_question_policy(errors: list[str]) -> None:
     """Validate the code-backed request_user_input payload workflow."""
     files = {
         "SKILL.md": ROOT / "SKILL.md",
-        "README.md": ROOT / "README.md",
-        "agents/openai.yaml": ROOT / "agents/openai.yaml",
         "references/intake-and-planning.md": ROOT / "references/intake-and-planning.md",
         "references/drafting-and-critical-analysis.md": ROOT / "references/drafting-and-critical-analysis.md",
         "references/critical-writing-bank.md": ROOT / "references/critical-writing-bank.md",
@@ -337,24 +368,6 @@ def check_intake_question_policy(errors: list[str]) -> None:
             "Do not infer the statistical test or model",
             "two-way repeated-measures ANOVA",
         ],
-        "agents/openai.yaml": [
-            "display the relevant brief or decision plan before every Asking Questions batch",
-            "generate dynamic request_user_input payloads with scripts/build_intake_questions.py",
-            "task type",
-            "citation count plus density",
-            "context-generated output format",
-            "lab-report analysis tool and method",
-            "poster canvas and message hierarchy",
-            "presentation timing and notes",
-            "website interaction model and platform constraints",
-            "figure purpose and source basis",
-            "figure legend depth and source or permission note",
-            "DOCX or LaTeX formatting details",
-            "paragraph-level section plan",
-            "proof logic",
-            "real paragraph labels",
-            "body paragraphs or Discussion",
-        ],
         "references/qa-and-validation.md": [
             "plan_or_decision_context_displayed_before_questions",
             "citation_quantity_confirmed",
@@ -377,23 +390,6 @@ def check_intake_question_policy(errors: list[str]) -> None:
             "figure_generation_spec_present",
             "figure_legend_requirements_confirmed",
             "Task-Specific QA",
-        ],
-        "README.md": [
-            "posters, presentations, interactive websites, figure generation tasks, figure legends",
-            "displays the relevant brief, paragraph, format, or critical-analysis plan",
-            "task type",
-            "citation quantity as an approximate count plus density",
-            "analysis tool",
-            "statistical or model method",
-            "poster users",
-            "presentation users",
-            "website users",
-            "figure-generation users",
-            "figure-legend users",
-            "chat text, DOCX, LaTeX",
-            "real labels such as Abstract",
-            "body paragraphs or Discussion",
-            "Nature-style journal tables",
         ],
     }
     for rel, phrases in required_phrases.items():
@@ -643,6 +639,7 @@ def main() -> int:
         check_skill_frontmatter(errors)
     check_english_only(errors, args.strict)
     check_readme_and_license(errors)
+    check_openai_metadata(errors)
     check_multiple_skill_system(errors)
     check_intake_question_policy(errors)
 

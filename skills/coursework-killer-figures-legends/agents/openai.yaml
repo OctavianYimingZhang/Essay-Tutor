@@ -1,5 +1,5 @@
 interface:
-  display_name: "Essay Figures Legends"
+  display_name: "CourseWork Figures Legends"
   short_description: "Specify figures and submit-ready legends"
   default_prompt: "Use $coursework-killer-figures-legends to specify my figure and write a source-backed submit-ready legend."
 policy:

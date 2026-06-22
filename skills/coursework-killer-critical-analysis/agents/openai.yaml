@@ -1,5 +1,5 @@
 interface:
-  display_name: "Essay Critical Analysis"
+  display_name: "CourseWork Critical Analysis"
   short_description: "Add evaluative stance and critique"
   default_prompt: "Use $coursework-killer-critical-analysis to build a CriticalAnalysisPlan and insert stronger critique into my Discussion."
 policy:
