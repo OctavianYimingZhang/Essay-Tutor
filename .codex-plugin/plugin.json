@@ -1,0 +1,44 @@
+{
+  "name": "coursework-killer",
+  "version": "0.1.0",
+  "description": "Multiple-skill academic coursework plugin for brief locking, planning, research, drafting, data, visuals, DOCX formatting, and final QA.",
+  "author": {
+    "name": "Octavian Yiming Zhang"
+  },
+  "homepage": "https://github.com/OctavianYimingZhang/Essay-Tutor",
+  "repository": "https://github.com/OctavianYimingZhang/Essay-Tutor",
+  "license": "MIT",
+  "keywords": [
+    "coursework",
+    "academic-writing",
+    "planning",
+    "research",
+    "citation",
+    "critical-analysis",
+    "lab-report",
+    "docx"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "CourseWork Killer",
+    "shortDescription": "Plan, draft, format, and check assessed academic coursework.",
+    "longDescription": "CourseWork Killer routes assessed coursework tasks through focused workflows for intake and planning, research and citation, drafting and revision, critical analysis, lab reports and data, figures and legends, posters and presentations, interactive websites, DOCX formatting, and final QA. It preserves the existing requirement, rubric, brief-locking, planning approval, and writing-gate workflow.",
+    "developerName": "Octavian Yiming Zhang",
+    "category": "Education",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/OctavianYimingZhang/Essay-Tutor",
+    "privacyPolicyURL": "https://openai.com/policies/privacy-policy/",
+    "termsOfServiceURL": "https://openai.com/policies/terms-of-use/",
+    "defaultPrompt": [
+      "Reconstruct this assignment brief and ask the plan-changing questions.",
+      "Build a section plan and CriticalAnalysisPlan before drafting.",
+      "Format and QA this coursework document against the brief."
+    ],
+    "brandColor": "#0F766E",
+    "screenshots": []
+  }
+}

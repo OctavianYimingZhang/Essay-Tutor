@@ -12,7 +12,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "skills"
-DEFAULT_INSTALL_ROOT = ROOT.parent
+DEFAULT_INSTALL_ROOT = pathlib.Path.home() / ".codex" / "skills"
 MARKER = ".coursework_killer_generated"
 LEGACY_MARKER = ".essay_tutor_generated"
 
